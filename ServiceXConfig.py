@@ -23,16 +23,17 @@ def get_pod_status(name: str):
     Get the pod status for everything that starts with name
     """
     result = subprocess.run(['kubectl', 'get', 'pod', '-o', 'json'], stdout=subprocess.PIPE)
+    # print(result)
     data = json.loads(result.stdout)
     return [{'name': p['metadata']['name'], 'status': all([s['ready'] for s in p['status']['containerStatuses']])} for p in data['items'] if p['metadata']['name'].startswith(name)]
 
 
-def check_helm_chart_and_servicex_pods(name: str):
+def check_servicex_pods(name: str):
     """
     Checking helm chart of ServiceX and pod status
     """
-    if not is_chart_running(name):
-        raise BaseException(f"Helm chart is not deployed!")    
+    # if not is_chart_running(name):
+    #     raise BaseException(f"Helm chart is not deployed!")    
     status = get_pod_status(name)
     is_ready = all(s['status'] for s in status)
     if not is_ready:
@@ -93,3 +94,8 @@ def disconnect_servicex_backend(connection):
             logging.info( "Cannot disconnect to the backend: " + psutil.Process(connection.pid).cmdline()[2] )
     else:
         logging.info( f"No connection exists with name: {connection}" )
+
+# def set_times(step:str, current_time):
+#     times = {}
+#     times.update({step:current_time})
+    

@@ -1,5 +1,6 @@
 import uproot
-import awkward
+# import awkward
+import pyarrow.parquet as pq
 import numpy
 import coffea
 import os
@@ -34,18 +35,32 @@ def output_to_histogram(servicex_request, full_config, request_id: str):
         logging.info(f'Merge files from request id: {request_id}')
 
         # output_file per REGION
-        output_file_name = full_config["Job0"]["Job"] + "/" + full_config["Job0"]["Job"]+"_"+full_config['Region0']['Region'] + ".root"
+        output_file_name = full_config["Job0"]["Job"] + "/" + full_config["Job0"]["Job"]+"_"+full_config['Region0']['Region'] + "_histos.root"
         fout = uproot.recreate( output_file_name )
 
         # histograms for SAMPLE in REGION
         hist_name = full_config["Region0"]["Region"] + "_" + full_config["Sample0"]["Sample"]
-        hist_binning = full_config['Region0']['Binning'].split(",")        
-        h = coffea.hist.Hist("test", coffea.hist.Bin("var", "", hist_binning))
+        binFromVariable = False
+        try:
+            full_config['Region0']['Binning'].split(",")
+            binFromVariable = True
+            logging.info(f'Histogram binning from "Region/Variable"')
+        except KeyError:
+            logging.info(f'Histogram binning from "Region/Binning"')
+            
+        if binFromVariable:
+            hist_binning = full_config['Region0']['Binning'].split(",")
+            h = coffea.hist.Hist("test", coffea.hist.Bin("var", "", hist_binning))
+        else:
+            h = coffea.hist.Hist("test", coffea.hist.Bin("var", "", int(full_config['Region0']['Variable'].split(",")[1]), float(full_config['Region0']['Variable'].split(",")[2]), float(full_config['Region0']['Variable'].split(",")[3])))
+
         for file in os.listdir(full_config["Job0"]["Job"]):                     
             if request_id in file:           
-                print(file)
-                columns = awkward.fromparquet(full_config["Job0"]["Job"]+"/"+file)
-                h.fill(var=numpy.array(columns[columns.columns[0]]))
+                # print(file)
+                # columns = awkward.fromparquet(full_config["Job0"]["Job"]+"/"+file)
+                # h.fill(var=numpy.array(columns[columns.columns[0]]))
+                columns = pq.read_table(full_config["Job0"]["Job"]+"/"+file)
+                h.fill(var=numpy.array(columns.column(0)))
         fout[hist_name] = coffea.hist.export1d(h)
                 
         fout.close()
