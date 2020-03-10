@@ -4,6 +4,7 @@ import linecache
 import json
 import time
 import logging
+import asyncio
 from tqdm import tqdm
 from ServiceXTCutToQastleWrapper import tcut_to_qastle
 
@@ -18,23 +19,25 @@ def read_configuration(confFile: str, block_name: str):
             if re.search(r'\b{}\b'.format(block_name), line):            
                 Block[block_name+str(num)] = {}
                 Block[block_name+str(num)][line.split()[0].strip(':')] = line.split(":")[1].strip("\n").strip().strip('\"')
-
                 inlines = mark + 2
                 while inlines:
                     inline = linecache.getline(confFile, inlines)
                     if len(re.findall("^ *", inline)[0]) == 2: 
-                        if inline.strip(): ## Check empty line                                          
-                            Block[block_name+str(num)][inline.split()[0].strip(':')] = inline.split(":")[1].strip("\n").strip().strip('\"')
+                        if inline.strip(): ## Check empty line
+                            if len(inline.split(":")) == 3: # For GridDID
+                                Block[block_name+str(num)][inline.split()[0].strip(':')] = ':'.join(inline.split(":")[1:]).strip("\n").strip().strip('\"')
+                            else:    
+                                Block[block_name+str(num)][inline.split()[0].strip(':')] = inline.split(":")[1].strip("\n").strip().strip('\"')
                     else:
                         num += 1                    
                         break
                     inlines += 1
         return Block
 
-def get_selection(confFile: str):
-
+# def get_selection(confFile: str):
+def get_selection(confFile: str, sample:str):
     selection_from_region = read_configuration(confFile, "Region")['Region0']['Selection']
-    selection_from_sample = read_configuration(confFile, "Sample")['Sample0']['Selection']
+    selection_from_sample = read_configuration(confFile, "Sample")[sample]['Selection']
     selection = selection_from_region + "&&" + selection_from_sample
     if re.findall(r'(XXX_\w+)',selection):
         replacements = re.findall(r'(XXX_\w+)',selection)
@@ -56,43 +59,64 @@ def load_requests(confFile: str):
     samples = read_configuration(confFile, "Sample")
     systematics = read_configuration(confFile, "Systematic")
     full_config = {**job, **regions, **samples, **systematics}
-    selection = get_selection(confFile)
-    variable = full_config['Region0']['Variable'].split(",")[0]
-        
-    request = {}
+    request_list = []
+    for sam in samples:
+        selection = get_selection(confFile, sam)
+        variable = full_config['Region0']['Variable'].split(",")[0]
+        request = {}
+        request["did"] = full_config[sam]['GridDID']
+        request["tree-name"] = full_config['Job0']['NtupleName']
+        request["selection"] = tcut_to_qastle( selection, variable )
+        request["image"] = "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow"
+        request["result-destination"] = "object-store"    
+        request["result-format"] = "parquet"
+        request["chunk-size"] = "1000"
+        request["workers"] = "6"
+        request_list.append(request)
+    return (request_list, full_config)
 
-    request["did"] = full_config['Sample0']['GridDID'].split(".")[0] + "." + full_config['Sample0']['GridDID'].split(".")[1] + ":" + full_config['Sample0']['GridDID']
-    request["tree-name"] = full_config['Job0']['NtupleName']
-    request["selection"] = tcut_to_qastle( selection, variable )
-    request["image"] = "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow"
-    request["result-destination"] = "object-store"    
-    request["result-format"] = "parquet"
-    request["chunk-size"] = "1000"
-    request["workers"] = "6"
+def get_request_info(request: str, full_config):
+    """
+    Return sample name associated to the request id
+    """
+    for x, y in full_config.items():
+        if 'Sample' in x:
+            for key in y:
+                if y[key] == request["did"]:
+                    return y['Sample'].strip()
 
-    return (request, full_config)
+def print_requests(request: str, full_config):
+    useful_print = {"Input DID": request["did"], \
+                    "Tree": request["tree-name"], \
+                    "Region": full_config["Region0"]["Region"], \
+                    "Variable": full_config['Region0']['Variable'].split(",")[0]}
+    print(json.dumps(useful_print, indent=4))
 
-
-def print_requests(request: str):
-    print(json.dumps(request, indent=4))
-    
-
-def make_requests(request):
+def make_requests(request_list, full_config):
     """
     Make transform request
-    """
-    print_requests(request)
-    char = input('Press Y to submit the requests: ')    
-    if char.lower() == "y":
-        response = requests.post("http://localhost:5000/servicex/transformation", json=request)  
+    """    
+    request_id_list = []
+    sample_list = []
+    for req in request_list:
+        print_requests(req, full_config)
+        sample = get_request_info(req, full_config)
+        # char = input('Press Y to submit the requests: ')    
+        # if char.lower() == "y":
+        response = requests.post("http://localhost:5000/servicex/transformation", json=req)  
         request_id = response.json()["request_id"]
-        return request_id
-    else:
-        print("Do NOT submit ServiceX transform requests")
-        return None
+        request_id_list.append( request_id )
+        sample_list.append(sample)
+        # else:
+        #     print("Do NOT submit above ServiceX transform requests")
+        #     request_id_list.append( None )
+        #     sample_list.append( None )
+        #     # return None
+    for req, sam in zip(request_id_list, sample_list):
+        print(f"Sample: {sam} - request id: {req}")
+    return request_id_list, sample_list
 
-
-def monitor_requests(request_id):
+async def monitor_requests(request_id, sample, pos:int):
     """
     Monitor jobs
     """
@@ -113,10 +137,11 @@ def monitor_requests(request_id):
         files_remaining = status['files-remaining']
         files_processed = status['files-processed']
         total_files = files_remaining + files_processed
-        t = tqdm(total=total_files, unit='file', desc=request_id)
+        t = tqdm(total=total_files, unit='file', desc=sample, position=pos, leave=False)
+        # t = tqdm(total=total_files, unit='file', desc=sample)
         job_done = False
         while not job_done:                    
-            time.sleep(1)
+            await asyncio.sleep(1)
             status = requests.get(status_endpoint).json() 
             t.update(status['files-processed'] - t.n)
             files_remaining = status['files-remaining']
@@ -125,5 +150,14 @@ def monitor_requests(request_id):
                 if files_remaining == 0:
                     job_done = True
                     t.close()
-        print(f"\nRequest id: {request_id} is finished - {files_processed}/{total_files} files are processed")
-        return request_id
+        return sample + " - " +  str(status['files-processed']) + "/" + str(total_files) + " files are processed"
+
+def monitor_multiple_requests(request_id_list, sample_list):
+    loop = asyncio.get_event_loop()
+    request_list = [monitor_requests(req, sam, i) for (req, sam, i) in zip(request_id_list, sample_list, range(len(request_id_list)))]
+    jobs = asyncio.wait(request_list)
+    output,_ = loop.run_until_complete(jobs)
+    print("\n")
+    for job in output:
+        print(f"Finished jobs: {job.result()}")
+    loop.close()

@@ -3,7 +3,7 @@
 
 import requests
 from ServiceXConfig import check_servicex_pods, connect_servicex_backend, disconnect_servicex_backend
-from ServiceXRequests import load_requests, print_requests, make_requests, monitor_requests
+from ServiceXRequests import load_requests, print_requests, make_requests, monitor_multiple_requests
 from ServiceXPostProcessing import download_output_files, output_to_histogram
 from ServiceXTimer import time_measure
 
@@ -25,17 +25,17 @@ t.set_time("t_connect_servicex_app")
 
 
 # Step 3: Prepare transform requests
-servicex_request, full_config = load_requests("configFiles/v9fit_simple.config")
+servicex_request_list, full_config = load_requests("configFiles/v9fit_simple.config")
 t.set_time("t_prepare_request")
 
 
 # Step 4: Make requests
-request_id = make_requests(servicex_request)
+request_id_list, sample_list = make_requests(servicex_request_list, full_config)
 t.set_time("t_make_request")
 
 
 # Step 5: Monitor jobs
-finished_id = monitor_requests(request_id) # Returns request id of finished job
+monitor_multiple_requests(request_id_list, sample_list)
 t.set_time("t_request_complete")
 
 
@@ -45,12 +45,12 @@ t.set_time("t_connect_minio")
 
 
 # Step 7: Download output
-download_file_list = download_output_files(full_config,request_id)
+download_output_files(full_config,request_id_list)
 t.set_time("t_download_outputs")
 
 
 # Step 8: Post processing
-output_to_histogram(servicex_request, full_config, request_id)
+output_to_histogram(servicex_request_list[0], full_config, request_id_list, sample_list)
 t.set_time("t_postprocessing")
 
 
