@@ -1,14 +1,22 @@
 # ServiceX to deliver histogram out of flat ntuple at grid for ttH ML analysis
 # Requires Kubernetes cluster and ServiceX has to be deployed
 
+import logging
 import requests
 from ServiceXConfig import check_servicex_pods, connect_servicex_backend, disconnect_servicex_backend
 from ServiceXRequests import load_requests, print_requests, make_requests, monitor_multiple_requests
 from ServiceXPostProcessing import download_output_files, output_to_histogram
-from ServiceXTimer import time_measure
+from ServiceXTimerLogger import time_measure, logger
 
+
+# Load logger
+logger = logging.getLogger('servicex_logger')
+
+
+# Initialize timer
 t = time_measure("servicex")
 t.set_time("start")
+
 
 # Helm chart name of ServiceX
 servicex_helm_chart_name = "uproot"
@@ -20,7 +28,7 @@ t.set_time("t_check_servicex_pods")
 
 
 # Step 2: Prepare backend to make a request
-servicex_app = connect_servicex_backend(servicex_helm_chart_name, "servicex-app", 5000)
+connect_servicex_backend(servicex_helm_chart_name, "servicex-app", 5000)
 t.set_time("t_connect_servicex_app")
 
 
@@ -40,7 +48,7 @@ t.set_time("t_request_complete")
 
 
 # Step 6: Prepare backend to download output
-minio_backend = connect_servicex_backend(servicex_helm_chart_name, "minio", 9000)
+connect_servicex_backend(servicex_helm_chart_name, "minio", 9000)
 t.set_time("t_connect_minio")
 
 
@@ -55,8 +63,7 @@ t.set_time("t_postprocessing")
 
 
 # Step 9: Disconnect from backends
-disconnect_servicex_backend(servicex_app)
-disconnect_servicex_backend(minio_backend)
+disconnect_servicex_backend()
 t.set_time("t_disconnect_apps")
 
 t.print_times()

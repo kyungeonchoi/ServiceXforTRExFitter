@@ -7,6 +7,11 @@ import logging
 import asyncio
 from tqdm import tqdm
 from ServiceXTCutToQastleWrapper import tcut_to_qastle
+from ServiceXConfig import get_existing_transformers
+from ServiceXTimerLogger import write_transformer_log
+
+logger = logging.getLogger('servicex_logger')
+
 
 def read_configuration(confFile: str, block_name: str):
     """
@@ -34,7 +39,7 @@ def read_configuration(confFile: str, block_name: str):
                     inlines += 1
         return Block
 
-# def get_selection(confFile: str):
+
 def get_selection(confFile: str, sample:str):
     selection_from_region = read_configuration(confFile, "Region")['Region0']['Selection']
     selection_from_sample = read_configuration(confFile, "Sample")[sample]['Selection']
@@ -50,6 +55,7 @@ def get_selection(confFile: str, sample:str):
                         selection = re.sub(xxx, line[1].strip(xxx + ":").rstrip(), selection)
     return selection
 
+
 def load_requests(confFile: str):
     """
     Prepare requests for ServiceX
@@ -59,21 +65,23 @@ def load_requests(confFile: str):
     samples = read_configuration(confFile, "Sample")
     systematics = read_configuration(confFile, "Systematic")
     full_config = {**job, **regions, **samples, **systematics}
-    request_list = []
+    request_list = []    
     for sam in samples:
         selection = get_selection(confFile, sam)
         variable = full_config['Region0']['Variable'].split(",")[0]
         request = {}
         request["did"] = full_config[sam]['GridDID']
         request["tree-name"] = full_config['Job0']['NtupleName']
-        request["selection"] = tcut_to_qastle( selection, variable )
+        request["selection"],request["branches-in-selection"] = tcut_to_qastle( selection, variable )
         request["image"] = "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow"
         request["result-destination"] = "object-store"    
         request["result-format"] = "parquet"
         request["chunk-size"] = "1000"
         request["workers"] = "6"
-        request_list.append(request)
+        request["tcut-selection"] = selection
+        request_list.append(request)        
     return (request_list, full_config)
+
 
 def get_request_info(request: str, full_config):
     """
@@ -85,24 +93,32 @@ def get_request_info(request: str, full_config):
                 if y[key] == request["did"]:
                     return y['Sample'].strip()
 
+
 def print_requests(request: str, full_config):
-    useful_print = {"Input DID": request["did"], \
+    console_print = {"Input DID": request["did"], \
                     "Tree": request["tree-name"], \
                     "Region": full_config["Region0"]["Region"], \
                     "Variable": full_config['Region0']['Variable'].split(",")[0]}
-    print(json.dumps(useful_print, indent=4))
+    print(json.dumps(console_print, indent=4))
+    request_log = request.copy()
+    del request_log['selection']
+    logger.debug(json.dumps(request_log, indent=4))
+
 
 def make_requests(request_list, full_config):
     """
     Make transform request
     """    
+    get_existing_transformers()
     request_id_list = []
     sample_list = []
     for req in request_list:
-        print_requests(req, full_config)
+        print_requests(req, full_config) # print simplified request query
         sample = get_request_info(req, full_config)
-        # char = input('Press Y to submit the requests: ')    
-        # if char.lower() == "y":
+
+        del req['branches-in-selection']
+        del req['tcut-selection']
+        # print(json.dumps(req, indent=4))
         response = requests.post("http://localhost:5000/servicex/transformation", json=req)  
         request_id = response.json()["request_id"]
         request_id_list.append( request_id )
@@ -113,8 +129,9 @@ def make_requests(request_list, full_config):
         #     sample_list.append( None )
         #     # return None
     for req, sam in zip(request_id_list, sample_list):
-        print(f"Sample: {sam} - request id: {req}")
+        logger.info(f"Sample: {sam} - request id: {req}")
     return request_id_list, sample_list
+
 
 async def monitor_requests(request_id, sample, pos:int):
     """
@@ -138,9 +155,9 @@ async def monitor_requests(request_id, sample, pos:int):
         files_processed = status['files-processed']
         total_files = files_remaining + files_processed
         t = tqdm(total=total_files, unit='file', desc=sample, position=pos, leave=False)
-        # t = tqdm(total=total_files, unit='file', desc=sample)
         job_done = False
-        while not job_done:                    
+        while not job_done:       
+            t.refresh()             
             await asyncio.sleep(1)
             status = requests.get(status_endpoint).json() 
             t.update(status['files-processed'] - t.n)
@@ -150,7 +167,9 @@ async def monitor_requests(request_id, sample, pos:int):
                 if files_remaining == 0:
                     job_done = True
                     t.close()
+                    write_transformer_log(request_id)
         return sample + " - " +  str(status['files-processed']) + "/" + str(total_files) + " files are processed"
+
 
 def monitor_multiple_requests(request_id_list, sample_list):
     loop = asyncio.get_event_loop()
@@ -159,5 +178,6 @@ def monitor_multiple_requests(request_id_list, sample_list):
     output,_ = loop.run_until_complete(jobs)
     print("\n")
     for job in output:
-        print(f"Finished jobs: {job.result()}")
+        # print(f"Finished jobs: {job.result()}")
+        logger.info(f"Finished jobs: {job.result()}")
     loop.close()

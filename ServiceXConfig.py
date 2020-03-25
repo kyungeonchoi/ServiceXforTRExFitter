@@ -4,7 +4,7 @@ import logging
 import psutil
 import time
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('servicex_logger')
 
 def is_chart_running(name: str):
     """
@@ -28,6 +28,14 @@ def get_pod_status(name: str):
     return [{'name': p['metadata']['name'], 'status': all([s['ready'] for s in p['status']['containerStatuses']])} for p in data['items'] if p['metadata']['name'].startswith(name)]
 
 
+def get_existing_transformers():
+    result = subprocess.run(['kubectl', 'get', 'pod', '-o', 'json'], stdout=subprocess.PIPE)
+    # print(result)
+    data = json.loads(result.stdout)
+    existing_transformers = len([p for p in data['items'] if p['metadata']['name'].startswith('transformer')])
+    logger.debug(f'Number of existing transformer pods before make request: {existing_transformers}')
+
+
 def check_servicex_pods(name: str):
     """
     Checking helm chart of ServiceX and pod status
@@ -38,8 +46,8 @@ def check_servicex_pods(name: str):
     is_ready = all(s['status'] for s in status)
     if not is_ready:
         raise BaseException(f"ServiceX is not ready! Pod(s) are not running.")
-    logging.info(f'ServiceX is up and running!')
-
+    logger.info(f'ServiceX is up and running!')
+    
 
 def find_pod(helm_release_name:str, pod_name:str):
     """
@@ -70,32 +78,33 @@ def connect_servicex_backend(name: str, app_name: str, port: int):
     """
     if not check_portforward_running(app_name):        
         try:
-            app = subprocess.Popen(["kubectl", "port-forward", find_pod(name, app_name), "{}:{}".format(port,port)], stdout=subprocess.DEVNULL)
-            logging.info(f"Connect to the backend of {app_name}")
-            time.sleep(2) # Wait until port-forward is being established
-            return app
-            
+            subprocess.Popen(["kubectl", "port-forward", find_pod(name, app_name), "{}:{}".format(port,port)], stdout=subprocess.DEVNULL)
+            logger.info(f"Connect to the backend of {app_name}")
+            time.sleep(2) # Wait until port-forward is being established             
         except:
-            logging.info(f"Cannot connect to the backend of {app_name}")
+            logger.info(f"Cannot connect to the backend of {app_name}")
     else:
-        logging.info(f"Already connected to the backend of {app_name}")
+        logger.info(f"Already connected to the backend of {app_name}")        
 
 
-
-def disconnect_servicex_backend(connection):
+def disconnect_servicex_backend():
     """
     Disconnect ServiceX backend
     """
-    if connection:
+    servicex_backend_pids = []
+    for p in psutil.process_iter():
         try:
-            logging.info( "Disconnected to the backend: " + psutil.Process(connection.pid).cmdline()[2] )
-            connection.kill()
-        except:
-            logging.info( "Cannot disconnect to the backend: " + psutil.Process(connection.pid).cmdline()[2] )
-    else:
-        logging.info( f"No connection exists with name: {connection}" )
+            all_process = p.name()
+        except (psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+        except psutil.NoSuchProcess:
+            continue
+        if all_process.lower() == "kubectl" and ("servicex-app" in p.cmdline()[2] or "minio" in p.cmdline()[2]):
+            servicex_backend_pids.append(p.pid)
 
-# def set_times(step:str, current_time):
-#     times = {}
-#     times.update({step:current_time})
-    
+    for connection in servicex_backend_pids:
+        try:
+            logger.info( "Disconnected to the backend: " + psutil.Process(connection).cmdline()[2] )
+            psutil.Process(connection).kill()
+        except:
+            logger.info( "Cannot disconnect to the backend: " + psutil.Process(connection).cmdline()[2] )

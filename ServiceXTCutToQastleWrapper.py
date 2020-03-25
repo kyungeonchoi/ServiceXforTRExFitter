@@ -2,6 +2,8 @@ import re
 import logging
 import func_adl_uproot,qastle,ast
 
+logger = logging.getLogger('servicex_logger')
+
 def multiple_replace(dict, text):
     # Create a regular expression  from the dictionary keys
     regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
@@ -30,7 +32,7 @@ def tcut_to_qastle( selection, variable ):
         except ValueError:
             variables.append(x)
     variables = list(dict.fromkeys(variables)) # Remove duplicates
-    logging.info(f'Number of accessed branches for the selection: {len(variables)}')
+    # logging.info(f'Number of accessed branches for the selection: {len(variables)}')
 
     # 2nd step: replace variable names with event.
     for x in variables:
@@ -93,4 +95,4 @@ def tcut_to_qastle( selection, variable ):
     query = "EventDataset().Where('lambda event: " + output + "').Select('lambda event: (event." + variable + ",)')"
     text_ast = qastle.python_ast_to_text_ast(qastle.insert_linq_nodes(ast.parse(query)))
 
-    return text_ast
+    return (text_ast, len(variables))

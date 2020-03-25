@@ -1,0 +1,154 @@
+Welcome to the ServiceXforTRExFitter!!
+Job submission: 2020-03-24_17-23-06
+ServiceX is up and running!
+Connect to the backend of servicex-app
+Number of existing transformer pods before make request: 1
+{
+    "did": "user.kchoi:user.kchoi.ttHML_80fb_ttH",
+    "tree-name": "nominal",
+    "branches-in-selection": 47,
+    "image": "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow",
+    "result-destination": "object-store",
+    "result-format": "parquet",
+    "chunk-size": "1000",
+    "workers": "6",
+    "tcut-selection": " (trilep_type&&!nTaus_OR_Pt25&&abs(total_charge)==1&&nJets_OR_T>=2&&nJets_OR_T_MV2c10_70&&lep_Pt_1>15e3&&lep_Pt_2>15e3&&lep_isolationFixedCutLoose_0 && abs(Mlll012-91.2e3)>10e3 && (lep_ID_0!=-lep_ID_1||(Mll01>12e3))&&(lep_ID_0!=-lep_ID_2||(Mll02>12e3))&&( ( (abs(lep_ID_0) == 13 &&lep_isMedium_0) ||( abs( lep_ID_0 ) == 11)) && ((abs( lep_ID_1 ) == 11&&abs( lep_Eta_1 ) <2.0)|| (abs(lep_ID_1) == 13 && lep_isMedium_1) ) && ((abs( lep_ID_2 ) == 11&&abs( lep_Eta_2 ) <2.0)||(abs( lep_ID_2 ) == 13 && lep_isMedium_2)))&& (((abs( lep_ID_1)*abs( lep_ID_2))!=169 && DRll12>0.5)||((abs( lep_ID_1)*abs( lep_ID_2))==169))&&Mll12>12e3 &&(lep_ID_0!=-lep_ID_1||abs(Mll01-91.2e3)>10e3)&&(lep_ID_0!=-lep_ID_2||abs(Mll02-91.2e3)>10e3) && MVA3lCERN_weight_ttH>-1) &&(lep_ID_0!=-lep_ID_1||abs(Mll01-91.2e3)>10e3)&&(lep_ID_0!=-lep_ID_2||abs(Mll02-91.2e3)>10e3)&& MVA3lCERN_weight_ttH > 0.3 && MVA3lCERN_weight_ttW < 0.75 && MVA3lCERN_weight_ttZ < 0.75 && MVA3lCERN_weight_VV < 0.75 && MVA3lCERN_weight_ttbar < 0.3&&( ( (dilep_type&&((abs(lep_ID_0)==13 && lep_isMedium_0 && lep_isolationFixedCutLoose_0 && lep_promptLeptonVeto_TagWeight_0<-0.5) || (abs(lep_ID_0)==11 && lep_isolationFixedCutLoose_0 && lep_isTightLH_0 && lep_chargeIDBDTTight_0>0.7 && lep_ambiguityType_0 == 0 && lep_promptLeptonVeto_TagWeight_0<-0.7))&&((abs(lep_ID_1)==13 && lep_isMedium_1 && lep_isolationFixedCutLoose_1 && lep_promptLeptonVeto_TagWeight_1<-0.5) || (abs(lep_ID_1)==11 && lep_isolationFixedCutLoose_1 && lep_isTightLH_1 && lep_chargeIDBDTTight_1>0.7 && lep_ambiguityType_1 == 0 && lep_promptLeptonVeto_TagWeight_1<-0.7))) || (trilep_type && nTaus_OR_Pt25==0 && (((abs(lep_ID_2)==13 && lep_isolationFixedCutLoose_2 && lep_promptLeptonVeto_TagWeight_2<-0.5) || (abs(lep_ID_2)==11 && lep_isolationFixedCutLoose_2 && lep_isTightLH_2 && lep_chargeIDBDTTight_2>0.7 && lep_promptLeptonVeto_TagWeight_2<-0.7 && lep_ambiguityType_2 == 0)) &&((abs(lep_ID_1)==13 && lep_isolationFixedCutLoose_1 && lep_promptLeptonVeto_TagWeight_1<-0.5) || (abs(lep_ID_1)==11 && lep_isolationFixedCutLoose_1 && lep_isTightLH_1 && lep_chargeIDBDTTight_1>0.7 && lep_promptLeptonVeto_TagWeight_1<-0.7 && lep_ambiguityType_1 == 0)))) || (dilep_type&&nTaus_OR_Pt25>1) || !(dilep_type||trilep_type) ||quadlep_type || (trilep_type && nTaus_OR_Pt25>0))&& ( (dilep_type&&lep_ID_0*lep_ID_1>0&&(lep_isQMisID_1==0)&&(lep_isQMisID_0==0)) || (trilep_type&&(lep_isQMisID_2==0)&&(lep_isQMisID_1==0)) ||quadlep_type&&FSF_4L_tot==1) ) || is1L2Tau"
+}
+{
+    "did": "user.kchoi:user.kchoi.ttHML_80fb_ttW",
+    "tree-name": "nominal",
+    "branches-in-selection": 47,
+    "image": "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow",
+    "result-destination": "object-store",
+    "result-format": "parquet",
+    "chunk-size": "1000",
+    "workers": "6",
+    "tcut-selection": " (trilep_type&&!nTaus_OR_Pt25&&abs(total_charge)==1&&nJets_OR_T>=2&&nJets_OR_T_MV2c10_70&&lep_Pt_1>15e3&&lep_Pt_2>15e3&&lep_isolationFixedCutLoose_0 && abs(Mlll012-91.2e3)>10e3 && (lep_ID_0!=-lep_ID_1||(Mll01>12e3))&&(lep_ID_0!=-lep_ID_2||(Mll02>12e3))&&( ( (abs(lep_ID_0) == 13 &&lep_isMedium_0) ||( abs( lep_ID_0 ) == 11)) && ((abs( lep_ID_1 ) == 11&&abs( lep_Eta_1 ) <2.0)|| (abs(lep_ID_1) == 13 && lep_isMedium_1) ) && ((abs( lep_ID_2 ) == 11&&abs( lep_Eta_2 ) <2.0)||(abs( lep_ID_2 ) == 13 && lep_isMedium_2)))&& (((abs( lep_ID_1)*abs( lep_ID_2))!=169 && DRll12>0.5)||((abs( lep_ID_1)*abs( lep_ID_2))==169))&&Mll12>12e3 &&(lep_ID_0!=-lep_ID_1||abs(Mll01-91.2e3)>10e3)&&(lep_ID_0!=-lep_ID_2||abs(Mll02-91.2e3)>10e3) && MVA3lCERN_weight_ttH>-1) &&(lep_ID_0!=-lep_ID_1||abs(Mll01-91.2e3)>10e3)&&(lep_ID_0!=-lep_ID_2||abs(Mll02-91.2e3)>10e3)&& MVA3lCERN_weight_ttH > 0.3 && MVA3lCERN_weight_ttW < 0.75 && MVA3lCERN_weight_ttZ < 0.75 && MVA3lCERN_weight_VV < 0.75 && MVA3lCERN_weight_ttbar < 0.3&&( ( (dilep_type&&lep_ID_0*lep_ID_1>0&&(lep_isQMisID_1==0)&&(lep_isQMisID_0==0)) || (trilep_type&&(lep_isQMisID_2==0)&&(lep_isQMisID_1==0)) ||quadlep_type&&FSF_4L_tot==1) &&  ( (dilep_type&&((abs(lep_ID_0)==13 && lep_isMedium_0 && lep_isolationFixedCutLoose_0 && lep_promptLeptonVeto_TagWeight_0<-0.5) || (abs(lep_ID_0)==11 && lep_isolationFixedCutLoose_0 && lep_isTightLH_0 && lep_chargeIDBDTTight_0>0.7 && lep_ambiguityType_0 == 0 && lep_promptLeptonVeto_TagWeight_0<-0.7))&&((abs(lep_ID_1)==13 && lep_isMedium_1 && lep_isolationFixedCutLoose_1 && lep_promptLeptonVeto_TagWeight_1<-0.5) || (abs(lep_ID_1)==11 && lep_isolationFixedCutLoose_1 && lep_isTightLH_1 && lep_chargeIDBDTTight_1>0.7 && lep_ambiguityType_1 == 0 && lep_promptLeptonVeto_TagWeight_1<-0.7))) || (trilep_type && nTaus_OR_Pt25==0 && (((abs(lep_ID_2)==13 && lep_isolationFixedCutLoose_2 && lep_promptLeptonVeto_TagWeight_2<-0.5) || (abs(lep_ID_2)==11 && lep_isolationFixedCutLoose_2 && lep_isTightLH_2 && lep_chargeIDBDTTight_2>0.7 && lep_promptLeptonVeto_TagWeight_2<-0.7 && lep_ambiguityType_2 == 0)) &&((abs(lep_ID_1)==13 && lep_isolationFixedCutLoose_1 && lep_promptLeptonVeto_TagWeight_1<-0.5) || (abs(lep_ID_1)==11 && lep_isolationFixedCutLoose_1 && lep_isTightLH_1 && lep_chargeIDBDTTight_1>0.7 && lep_promptLeptonVeto_TagWeight_1<-0.7 && lep_ambiguityType_1 == 0)))) || (dilep_type&&nTaus_OR_Pt25>1) || !(dilep_type||trilep_type) ||quadlep_type || (trilep_type && nTaus_OR_Pt25>0))) || is1L2Tau"
+}
+{
+    "did": "user.kchoi:user.kchoi.ttHML_80fb_ttZ",
+    "tree-name": "nominal",
+    "branches-in-selection": 47,
+    "image": "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow",
+    "result-destination": "object-store",
+    "result-format": "parquet",
+    "chunk-size": "1000",
+    "workers": "6",
+    "tcut-selection": " (trilep_type&&!nTaus_OR_Pt25&&abs(total_charge)==1&&nJets_OR_T>=2&&nJets_OR_T_MV2c10_70&&lep_Pt_1>15e3&&lep_Pt_2>15e3&&lep_isolationFixedCutLoose_0 && abs(Mlll012-91.2e3)>10e3 && (lep_ID_0!=-lep_ID_1||(Mll01>12e3))&&(lep_ID_0!=-lep_ID_2||(Mll02>12e3))&&( ( (abs(lep_ID_0) == 13 &&lep_isMedium_0) ||( abs( lep_ID_0 ) == 11)) && ((abs( lep_ID_1 ) == 11&&abs( lep_Eta_1 ) <2.0)|| (abs(lep_ID_1) == 13 && lep_isMedium_1) ) && ((abs( lep_ID_2 ) == 11&&abs( lep_Eta_2 ) <2.0)||(abs( lep_ID_2 ) == 13 && lep_isMedium_2)))&& (((abs( lep_ID_1)*abs( lep_ID_2))!=169 && DRll12>0.5)||((abs( lep_ID_1)*abs( lep_ID_2))==169))&&Mll12>12e3 &&(lep_ID_0!=-lep_ID_1||abs(Mll01-91.2e3)>10e3)&&(lep_ID_0!=-lep_ID_2||abs(Mll02-91.2e3)>10e3) && MVA3lCERN_weight_ttH>-1) &&(lep_ID_0!=-lep_ID_1||abs(Mll01-91.2e3)>10e3)&&(lep_ID_0!=-lep_ID_2||abs(Mll02-91.2e3)>10e3)&& MVA3lCERN_weight_ttH > 0.3 && MVA3lCERN_weight_ttW < 0.75 && MVA3lCERN_weight_ttZ < 0.75 && MVA3lCERN_weight_VV < 0.75 && MVA3lCERN_weight_ttbar < 0.3&&( ( (dilep_type&&lep_ID_0*lep_ID_1>0&&(lep_isQMisID_1==0)&&(lep_isQMisID_0==0)) || (trilep_type&&(lep_isQMisID_2==0)&&(lep_isQMisID_1==0)) ||quadlep_type&&FSF_4L_tot==1) &&  ( (dilep_type&&((abs(lep_ID_0)==13 && lep_isMedium_0 && lep_isolationFixedCutLoose_0 && lep_promptLeptonVeto_TagWeight_0<-0.5) || (abs(lep_ID_0)==11 && lep_isolationFixedCutLoose_0 && lep_isTightLH_0 && lep_chargeIDBDTTight_0>0.7 && lep_ambiguityType_0 == 0 && lep_promptLeptonVeto_TagWeight_0<-0.7))&&((abs(lep_ID_1)==13 && lep_isMedium_1 && lep_isolationFixedCutLoose_1 && lep_promptLeptonVeto_TagWeight_1<-0.5) || (abs(lep_ID_1)==11 && lep_isolationFixedCutLoose_1 && lep_isTightLH_1 && lep_chargeIDBDTTight_1>0.7 && lep_ambiguityType_1 == 0 && lep_promptLeptonVeto_TagWeight_1<-0.7))) || (trilep_type && nTaus_OR_Pt25==0 && (((abs(lep_ID_2)==13 && lep_isolationFixedCutLoose_2 && lep_promptLeptonVeto_TagWeight_2<-0.5) || (abs(lep_ID_2)==11 && lep_isolationFixedCutLoose_2 && lep_isTightLH_2 && lep_chargeIDBDTTight_2>0.7 && lep_promptLeptonVeto_TagWeight_2<-0.7 && lep_ambiguityType_2 == 0)) &&((abs(lep_ID_1)==13 && lep_isolationFixedCutLoose_1 && lep_promptLeptonVeto_TagWeight_1<-0.5) || (abs(lep_ID_1)==11 && lep_isolationFixedCutLoose_1 && lep_isTightLH_1 && lep_chargeIDBDTTight_1>0.7 && lep_promptLeptonVeto_TagWeight_1<-0.7 && lep_ambiguityType_1 == 0)))) || (dilep_type&&nTaus_OR_Pt25>1) || !(dilep_type||trilep_type) ||quadlep_type || (trilep_type && nTaus_OR_Pt25>0))) || is1L2Tau"
+}
+Sample: ttH - request id: 8a9ccacf-28bb-4cf7-ac42-ec41cdca3da3
+Sample: ttW - request id: a4b393d3-1ec2-4f83-8bba-9e15622053d6
+Sample: ttZ - request id: 3fd52f17-64de-4786-9c6c-46de9ceae387
+Transformer logs:
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/b6/ae/ttHML_80fb_410155_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/b6/ae/ttHML_80fb_410155_mc16a.root', 'file-id': 1433, 'status': 'success', 'num-messages': 0, 'total-time': 5.79, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/72/da/ttHML_80fb_410155_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/72/da/ttHML_80fb_410155_mc16d.root', 'file-id': 1434, 'status': 'success', 'num-messages': 0, 'total-time': 8.84, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+
+Transformer logs:
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/76/05/ttHML_80fb_345874_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/76/05/ttHML_80fb_345874_mc16a.root', 'file-id': 1429, 'status': 'success', 'num-messages': 0, 'total-time': 4.57, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/af/1c/ttHML_80fb_345875_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/af/1c/ttHML_80fb_345875_mc16d.root', 'file-id': 1432, 'status': 'success', 'num-messages': 0, 'total-time': 9.5, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/ff/5c/ttHML_80fb_345873_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/ff/5c/ttHML_80fb_345873_mc16a.root', 'file-id': 1427, 'status': 'success', 'num-messages': 0, 'total-time': 3.66, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/79/3e/ttHML_80fb_345874_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/79/3e/ttHML_80fb_345874_mc16d.root', 'file-id': 1430, 'status': 'success', 'num-messages': 0, 'total-time': 8.18, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/e8/15/ttHML_80fb_345873_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/e8/15/ttHML_80fb_345873_mc16d.root', 'file-id': 1428, 'status': 'success', 'num-messages': 0, 'total-time': 2.89, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/6d/fa/ttHML_80fb_345875_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/6d/fa/ttHML_80fb_345875_mc16a.root', 'file-id': 1431, 'status': 'success', 'num-messages': 0, 'total-time': 11.48, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+Transformer logs:
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/38/c0/ttHML_80fb_410218_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/38/c0/ttHML_80fb_410218_mc16a.root', 'file-id': 1439, 'status': 'success', 'num-messages': 0, 'total-time': 5.48, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/6b/ae/ttHML_80fb_410156_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/6b/ae/ttHML_80fb_410156_mc16d.root', 'file-id': 1436, 'status': 'success', 'num-messages': 0, 'total-time': 2.67, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/4b/f2/ttHML_80fb_410219_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/4b/f2/ttHML_80fb_410219_mc16d.root', 'file-id': 1442, 'status': 'success', 'num-messages': 0, 'total-time': 6.45, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/a7/a1/ttHML_80fb_410157_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/a7/a1/ttHML_80fb_410157_mc16a.root', 'file-id': 1437, 'status': 'success', 'num-messages': 0, 'total-time': 2.02, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/f9/b5/ttHML_80fb_410220_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/f9/b5/ttHML_80fb_410220_mc16a.root', 'file-id': 1443, 'status': 'success', 'num-messages': 0, 'total-time': 2.93, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/5c/92/ttHML_80fb_410218_mc16d_2.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/5c/92/ttHML_80fb_410218_mc16d_2.root', 'file-id': 1440, 'status': 'success', 'num-messages': 0, 'total-time': 6.3, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/ca/57/ttHML_80fb_410157_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/ca/57/ttHML_80fb_410157_mc16d.root', 'file-id': 1438, 'status': 'success', 'num-messages': 0, 'total-time': 2.84, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/4d/ad/ttHML_80fb_410220_mc16d.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/4d/ad/ttHML_80fb_410220_mc16d.root', 'file-id': 1444, 'status': 'success', 'num-messages': 0, 'total-time': 3.62, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+----- ['/home/atlas', '/generated', '/home/atlas', '/opt/conda/lib/python37.zip', '/opt/conda/lib/python3.7', '/opt/conda/lib/python3.7/lib-dynload', '/opt/conda/lib/python3.7/site-packages']
+object-store None
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/20/b0/ttHML_80fb_410156_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlasscratchdisk/rucio/user/kchoi/20/b0/ttHML_80fb_410156_mc16a.root', 'file-id': 1435, 'status': 'success', 'num-messages': 0, 'total-time': 2.48, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+Transforming a single path: root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/eb/06/ttHML_80fb_410219_mc16a.root
+------<  {'file-path': 'root://fax.mwt2.org:1094//pnfs/uchicago.edu/atlaslocalgroupdisk/rucio/user/kchoi/eb/06/ttHML_80fb_410219_mc16a.root', 'file-id': 1441, 'status': 'success', 'num-messages': 0, 'total-time': 6.06, 'total-events': 0, 'total-bytes': 0, 'avg-rate': 0}
+
+Finished jobs: ttW - 2/2 files are processed
+Finished jobs: ttZ - 10/10 files are processed
+Finished jobs: ttH - 6/6 files are processed
+Connect to the backend of minio
+Histogram binning from "Region/Variable"
+Output file is created at: v9/v9_l30tau_ttH_histos.root
+Disconnected to the backend: uproot-servicex-app-76cfb84f9f-wn2t7
+Disconnected to the backend: uproot-minio-86475d69cd-xw8mr
+Summary of durations
+		Check ServiceX Pods:        0.4 sec
+		Connect to ServiceX App:    2.4 sec
+		Prepare Transform request:  0.3 sec
+		Make Request:               3.0 sec
+		Transform:                  29.0 sec
+		Connect to Minio:           2.4 sec
+		Download Outputs:           3.2 sec
+		Postprocessing:             0.5 sec
+		Disconnect ServiceX Apps:   0.0 sec
+		------------------------------
+		Total duration:             41.3 sec
