@@ -74,7 +74,7 @@ def load_requests(confFile: str):
         request["tree-name"] = full_config['Job0']['NtupleName']
         request["selection"],request["branches-in-selection"] = tcut_to_qastle( selection, variable )
         # request["image"] = "sslhep/servicex_func_adl_uproot_transformer:pandas_to_arrow"
-        request["image"] = "sslhep/servicex_func_adl_uproot_transformer:v0.4"
+        request["image"] = "sslhep/servicex_func_adl_uproot_transformer:develop"
         request["result-destination"] = "object-store"    
         request["result-format"] = "parquet"
         request["chunk-size"] = "1000"
