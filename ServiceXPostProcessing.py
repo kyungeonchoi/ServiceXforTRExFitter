@@ -76,8 +76,8 @@ def output_to_histogram(servicex_request, full_config, request_id_list, sample_l
                 for file in os.listdir(full_config["Job0"]["Job"]+'/Histograms'):                     
                     if request_id in file:           
                         columns = pq.read_table(full_config["Job0"]["Job"]+"/Histograms/"+file)
-                        h.fill(var=numpy.array(columns.column(0)))
-                        # h.scale(float(get_lumi(full_config)))
+                        # h.fill(var=numpy.array(columns.column(0)))
+                        h.fill(var=numpy.array(columns.column(full_config['Region0']['Variable'].split(",")[0])))                        
                         os.remove(full_config["Job0"]["Job"]+"/Histograms/"+file)
                 h.scale(float(get_lumi(full_config))) # Normalize to the luminosity
                 fout[hist_name] = coffea.hist.export1d(h)
