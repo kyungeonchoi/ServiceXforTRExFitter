@@ -1,16 +1,25 @@
 # ServiceX for TRExFitter
 
 ## Overview
-[`ServiceX`](https://github.com/ssl-hep/ServiceX), a component of the IRIS-HEP DOMA group's iDDS, is an experiment-agnostic service to enable on-demand data delivery from data lakes in different data formats, including Apache Arrow and ROOT ntuple. [`TRExFitter`](https://gitlab.cern.ch/TRExStats/TRExFitter) can take ROOT ntuples as input, which leads a quite long turnaround time for large (~TB) ntuples. In principle, ServiceX can be used to extract and deliver only necessary information based on a configuration file of TRExFitter.
+[`ServiceX`](https://github.com/ssl-hep/ServiceX), a component of the IRIS-HEP DOMA group's iDDS, is an experiment-agnostic service to enable on-demand data delivery from data lakes in different data formats, including Apache Arrow and ROOT ntuple. [`TRExFitter`](https://gitlab.cern.ch/TRExStats/TRExFitter) can take ROOT ntuples as input, which leads a quite long turnaround time for large (~TB) ntuples. 
+
+<!-- ServiceX for TRExFitter is a python library 
+
+
+which delivers only needed data based on the TRExFitter configuration file
+
+to deliver only data used by TRExFitter interactively. -->
 
 ## Prerequisite
-You need to have an access to a Kubernetes cluster which has deployed and running *uproot* ServiceX. More information can be found at [ServiceX github](https://github.com/ssl-hep/ServiceX)
+You need to have an access to a *uproot* ServiceX endpoint. More information can be found at [ServiceX github](https://github.com/ssl-hep/ServiceX)
 
-## Current version
-The current version (`v0.4`) supports a simplified TRExFitter configuration file which contains one Region and multiple Samples. It performs very similarly to the `n` step of TRExFitter which extract histograms from flat-ntuple with selection. Log file will be generated under directory `log`. The output histogram is normalized to the luminosity set by the configuration file. 
+<!-- ## Current version
+The current version (`v0.4`) supports a simplified TRExFitter configuration file which contains one Region and multiple Samples. It performs very similarly to the `n` step of TRExFitter which extract histograms from flat-ntuple with selection. Log file will be generated under directory `log`. The output histogram is normalized to the luminosity set by the configuration file.  -->
 
-## Usage
-The following script runs the `ServiceXforTRExFitter`:
+<!-- ## Usage -->
+
+
+<!-- The following script runs the `ServiceXforTRExFitter`:
 ```
 python ServiceXReader.py
 ```
@@ -32,4 +41,7 @@ The following shows the real-time demo of the `ServiceXforTRExFitter`:
 
 ![](demo.gif)
 
-The output histogram is located at `v9/Histograms/ttHML_l30tau_ttH_histos.root`. 
+The output histogram is located at `v9/Histograms/ttHML_l30tau_ttH_histos.root`.  -->
+
+## Acknowledgements
+Support for this work was provided by the the U.S. Department of Energy, Office of High Energy Physics under Grant No. DE-SC0007890
