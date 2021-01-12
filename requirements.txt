@@ -1,3 +1,4 @@
 uproot==3.11.3
 servicex==2.1.1
 tcut-to-qastle==0.4
+parquet_to_root==0.1.0

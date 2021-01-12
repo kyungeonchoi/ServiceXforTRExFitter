@@ -28,14 +28,46 @@ class LoadServiceXRequests():
                 req['Sample']     = sample['Sample']
                 req['gridDID']    = sample['GridDID']
                 req['ntupleName'] = self._trex_config.get_ntuple_name()
-                req['columns']    = region['Variable'].split(",")[0]
+                req['columns']    = region['Variable'].split(",")[0] + ',' + self.get_weight_columns(self.replace_XXX(sample['MCweight']))
                 # req['selection']  = sample['Selection'] + ' && ' + region['Selection']
                 req['selection']  = self.replace_XXX(sample['Selection']) + ' && ' + self.replace_XXX(region['Selection'])
                 request_list.append(req)
         return request_list
+    
 
-    def add_weight_columns(self):
-        pass
+    def _multiple_replace(self, dict, text):
+        # Create a regular expression  from the dictionary keys
+        regex = re.compile("(%s)" % "|".join(map(re.escape, dict.keys())))
+
+        # For each match, look-up corresponding value in dictionary
+        return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text) 
+
+    def get_list_of_columns_in_selection(self, tcut_selection:str):    
+        # 1st step: recognize all variable names
+        ignore_patterns = { # These are supported by Qastle
+            "abs" : " ",
+            "(" : " ",
+            ")" : " ",
+            "*" : " ",
+            "/" : " ",
+            "+" : " ",
+            "-" : " "
+        }
+        remove_patterns = self._multiple_replace(ignore_patterns, tcut_selection)
+    #     remove_marks = re.sub('[<&>!=|-]',' ',remove_patterns)
+        remove_marks = re.sub(r'[\?:<&>!=|-]',' ',remove_patterns) # Add ?, : for ternary
+        variables = []
+        for x in remove_marks.split():
+            try:
+                float(x)
+            except ValueError:
+                variables.append(x)
+        return list(dict.fromkeys(variables)) # Remove duplicates
+
+    
+    
+    def get_weight_columns(self, string):
+        return ', '.join(self.get_list_of_columns_in_selection(string))
 
     def replace_XXX(self, selection):
         if re.findall(r'(XXX_\w+)',selection):

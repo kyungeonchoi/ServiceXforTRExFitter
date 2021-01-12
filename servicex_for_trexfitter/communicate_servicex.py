@@ -16,7 +16,7 @@ class ServiceXFrontend:
         Setup ServiceX Frontend and return ServiceXDataset and query pairs
         """
         max_workers = 4
-        ignore_cache = True
+        ignore_cache = False
         uproot_transformer_image = "sslhep/servicex_func_adl_uproot_transformer:v1.0.0-rc.3"
         list_sx_dataset_query_pair = []
         for request in servicex_requests:        
@@ -30,8 +30,6 @@ class ServiceXFrontend:
         
         """
         async def _get_my_data(list_query):
-            # for query in list_query:
-            #     print(query)
             return await asyncio.gather(*list_query)
 
         nest_asyncio.apply()
