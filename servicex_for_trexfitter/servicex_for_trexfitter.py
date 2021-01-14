@@ -60,9 +60,9 @@ class ServiceXTRExFitter:
         output_parquet_list = sx.get_servicex_data()
 
         # Produce ROOT histograms
-        # make_ntuples(self._trex_config, requests, output_parquet_list)
+        make_ntuples(self._trex_config, requests, output_parquet_list)
 
         # return requests
-        return output_parquet_list
-        # return 'Ntuples are delivered!'
+        # return output_parquet_list
+        return 'Ntuples are delivered!'
     
