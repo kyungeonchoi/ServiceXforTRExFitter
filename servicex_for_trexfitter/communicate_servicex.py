@@ -29,6 +29,7 @@ class ServiceXFrontend:
         """
         
         """
+        print("Retrieving data from ServiceX Uproot backend..")
         async def _get_my_data(list_query):
             return await asyncio.gather(*list_query)
 

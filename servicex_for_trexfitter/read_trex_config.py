@@ -102,40 +102,4 @@ class LoadTRExConfig():
         if region_list:
             return region_list
         raise KeyError('No Region is defined in the TRExFitter configuration file.')
-
-    # def get_did_list(self):
-    #     did_list = []
-    #     for sample in self.get_sample_list():
-    #         did_list.append(sample['GridDID'])
-    #     if len(did_list) == len(self.get_sample_list()):
-    #         return did_list
-    #     raise KeyError('Sample grid DID is not defined in the TRExFitter configuration file.')
-    
-    # def get_column_n_selection_list(self):
-    #     selection_list = []
-    #     column_list = []
-    #     for region in self.get_region_list(): ## Selection from Region
-    #         for sample in self.get_sample_list(): ## Selection from Sample            
-    #             column_list.append(region['Variable'].split(",")[0])
-    #             selection = sample['Selection'] + ' && ' + region['Selection']
-    #             selection_list.append(selection)
-    #     return column_list, selection_list
-
-    
-# def get_selection(confFile: str, sample:str):
-#     selection_from_region = read_configuration(confFile, "Region")['Region0']['Selection']
-#     selection_from_sample = read_configuration(confFile, "Sample")[sample]['Selection']
-#     selection = selection_from_region + "&&" + selection_from_sample
-#     if re.findall(r'(XXX_\w+)',selection):
-#         replacements = re.findall(r'(XXX_\w+)',selection)
-#         # print("Replacements: ", replacements)
-#         replacement_file = read_configuration(confFile, "Job")['Job0']['ReplacementFile']
-#         with open( replacement_file ) as replacementFile:
-#             for line in enumerate(replacementFile.readlines()):
-#                 for xxx in replacements:
-#                     if re.search(rf'{xxx}\b', line[1]):
-#                         selection = re.sub(xxx, line[1].strip(xxx + ":").rstrip(), selection)
-#     return selection
-
-
     
