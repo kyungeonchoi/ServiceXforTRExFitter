@@ -28,7 +28,13 @@ setuptools.setup(name = "servicex_for_trexfitter",
     author_email = "kyungeonchoi@utexas.edu",
     url = "https://github.com/kyungeonchoi/ServiceXforTRExFitter",
     license = "BSD 3-clause",
-    install_requires = ["servicex>=2.2b5", "tcut-to-qastle>=0.4", "parquet-to-root>=0.3.0"],
+    python_requires='>=3.6',
+    install_requires = [
+        "servicex>=2.2b5", 
+        "tcut-to-qastle>=0.4", 
+        "parquet-to-root>=0.3.0",
+        "nest-asyncio>=1.3.3"
+        ],
     classifiers = [
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
