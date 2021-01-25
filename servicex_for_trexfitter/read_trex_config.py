@@ -6,27 +6,27 @@ def read_configuration(confFile: str, block_name: str):
     """
     Read TRExFitter configuration file and return block as python dict
     """
-    Block = {}
+    block = {}
     with open( confFile ) as configFile:
         num = 0
         for mark,line in enumerate(configFile.readlines()):        
             if re.search(r'\b{}\b'.format(block_name), line):            
-                Block[block_name+str(num)] = {}
-                Block[block_name+str(num)][line.split()[0].strip(':')] = line.split(":")[1].strip("\n").strip().strip('\"')
+                block[block_name+str(num)] = {}
+                block[block_name+str(num)][line.split()[0].strip(':')] = line.split(":")[1].strip("\n").strip().strip('\"')
                 inlines = mark + 2
                 while inlines:
                     inline = linecache.getline(confFile, inlines)
                     if len(re.findall("^ *", inline)[0]) == 2: 
                         if inline.strip(): ## Check empty line
                             if len(inline.split(":")) == 3: # For GridDID
-                                Block[block_name+str(num)][inline.split()[0].strip(':')] = ':'.join(inline.split(":")[1:]).strip("\n").strip().strip('\"')
+                                block[block_name+str(num)][inline.split()[0].strip(':')] = ':'.join(inline.split(":")[1:]).strip("\n").strip().strip('\"')
                             else:    
-                                Block[block_name+str(num)][inline.split()[0].strip(':')] = inline.split(":")[1].strip("\n").strip().strip('\"')
+                                block[block_name+str(num)][inline.split()[0].strip(':')] = inline.split(":")[1].strip("\n").strip().strip('\"')
                     else:
                         num += 1                    
                         break
                     inlines += 1
-        return Block
+        return block
 
 def load_trex_config(confFile: str):
     """
