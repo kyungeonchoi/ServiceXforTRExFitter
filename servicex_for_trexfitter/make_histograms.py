@@ -3,7 +3,6 @@ import uproot as uproot
 import pyarrow.parquet as pq
 import numpy
 import coffea
-# import boost_histogram as bh
 
 def make_histograms(trex_config, sx_requests, output_parquet_list):
     
@@ -23,10 +22,8 @@ def make_histograms(trex_config, sx_requests, output_parquet_list):
         try:
             region['Binning'].split(",")
             binFromBinVariable = True
-            # logger.info(f'Histogram binning from "Region/Variable"')
         except KeyError:
             print(f'Histogram binning from "Region/Binning"')
-            # logger.info(f'Histogram binning from "Region/Binning"')
         if binFromBinVariable:
             hist_binning = [float(s) for s in region['Binning'].split(',')]
         else:
@@ -45,13 +42,3 @@ def make_histograms(trex_config, sx_requests, output_parquet_list):
                     h.fill(var=numpy.array(columns.column(request['Variable'].split(",")[0])))
                 fout[hist_name] = coffea.hist.export1d(h)
         fout.close()
-
-                
-                ### Boost-histogram version
-                # h = bh.Histogram(bh.axis.Variable(hist_binning))
-                # for outfile in output:
-                #     columns = pq.read_table(outfile)
-                #     h.fill(numpy.array(columns.column(request['Variable'].split(",")[0])))
-                # h*=trex_config.get_lumi()
-                # fout[hist_name] = h.to_numpy()
-        

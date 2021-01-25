@@ -37,7 +37,6 @@ class LoadServiceXRequests():
                     req['gridDID']    = sample['GridDID']
                     req['ntupleName'] = self._trex_config.get_ntuple_name()
                     req['columns']    = region['Variable'].split(",")[0] + ',' + self.get_columns(self.replace_XXX(sample['MCweight']))
-                    # req['selection']  = sample['Selection'] + ' && ' + region['Selection']
                     req['selection']  = self.replace_XXX(sample['Selection']) + ' && ' + self.replace_XXX(region['Selection'])
                     request_list.append(req)
         
@@ -63,7 +62,6 @@ class LoadServiceXRequests():
             "-" : " "
         }
         remove_patterns = self._multiple_replace(ignore_patterns, tcut_selection)
-    #     remove_marks = re.sub('[<&>!=|-]',' ',remove_patterns)
         remove_marks = re.sub(r'[\?:<&>!=|-]',' ',remove_patterns) # Add ?, : for ternary
         variables = []
         for x in remove_marks.split():
