@@ -6,12 +6,10 @@ from .make_ntuples import make_ntuples
 class ServiceXTRExFitter:
 
     def __init__(self, trex_config):
-                #  sx_config = None):
         """
         self._trex_config    Python Dict format of input TRExFitter configuration file
         """
         self._trex_config = LoadTRExConfig(trex_config)
-        # self._servicex_requests = LoadServiceXRequests(self._trex_config)
 
     def get_trex_configuration(self):
         """
