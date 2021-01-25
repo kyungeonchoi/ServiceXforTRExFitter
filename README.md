@@ -24,23 +24,29 @@ Possible bottlenecks:
 which delivers only needed data based on the TRExFitter configuration file
 to deliver only data used by TRExFitter interactively. -->
 
+
 ## Prerequisites
 
 - Python 3.6, 3.7, or 3.8
 - Access to an *Uproot* ServiceX endpoint. More information about ServiceX can be found at [ServiceX documentation](https://servicex.readthedocs.io/en/latest/)
 - PyROOT
 
+
 ## Usage
 
 ### Prepare TRExFitter configuration
 
-The following items of TRExFitter configuration is required to modified to be compatible with the library:
+The following items of TRExFitter configuration need to be modified to be compatible with the library:
 
 - In `Job` block:  `NtuplePaths` has to be `<YOUR JOB NAME>/Data`
 - In `Sample` block: specify NEW option `GridDID` for each `Sample`, where `GridDID` is a Rucio data indentifier which includes scope and name. 
 - In `Sample` block: `NtupleFile` has to be the same name as `Sample` name
 
 An example TRExFitter configuration can be found [here](https://github.com/kyungeonchoi/ServiceXforTRExFitter/blob/development/config/v9fit_simple.config).
+
+N.B. `Systematic` block is not supported yet (will be supported in the future version)
+
+N.B. Tenary operation in the `Selection` is not supported yet
 
 ### Delivery of slimmed/skimmed ROOT ntuples
 <!-- ```
@@ -69,41 +75,6 @@ It will initiate ServiceX transformation(s) based on your TRExFitter configurati
 Now you can run TRExFitter with the action `n` to read input ntuples from the delivered ROOT ntuples. 
 Given that the current TRExFitter framework doesn't support `ServiceXforTRExFitter` yet, the option `GridDID` in `Sample` block has to be deleted before you run TRExFitter.
 
-
-
-<!-- configuration file -->
-
-<!-- ## Limitations -->
-
-<!-- ## Current version
-The current version (`v0.4`) supports a simplified TRExFitter configuration file which contains one Region and multiple Samples. It performs very similarly to the `n` step of TRExFitter which extract histograms from flat-ntuple with selection. Log file will be generated under directory `log`. The output histogram is normalized to the luminosity set by the configuration file.  -->
-
-<!-- ## Usage -->
-
-
-<!-- The following script runs the `ServiceXforTRExFitter`:
-```
-python ServiceXReader.py
-```
-which performs following steps in order:
-- Step 1: Check helm chart for SerivceX is deployed and running in good condition
-- Step 2: Prepare backend to make a request
-- Step 3: Prepare transform requests
-- Step 4: Make requests
-- Step 5: Monitor jobs
-- Step 6: Prepare backend to download output
-- Step 7: Download output
-- Step 8: Post processing
-- Step 9: Disconnect from backends
-
-You have to specify a Grid DID name for a sample in your TRExFitter configuration file.
-
-## Example 
-The following shows the real-time demo of the `ServiceXforTRExFitter`: 
-
-![](demo.gif)
-
-The output histogram is located at `v9/Histograms/ttHML_l30tau_ttH_histos.root`.  -->
 
 ## Acknowledgements
 Support for this work was provided by the the U.S. Department of Energy, Office of High Energy Physics under Grant No. DE-SC0007890
