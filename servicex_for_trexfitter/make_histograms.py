@@ -4,8 +4,9 @@ import pyarrow.parquet as pq
 import numpy
 import coffea
 
+
 def make_histograms(trex_config, sx_requests, output_parquet_list):
-    
+
     if len(sx_requests) is len(output_parquet_list):
         pass
     else:
@@ -16,8 +17,10 @@ def make_histograms(trex_config, sx_requests, output_parquet_list):
 
     # ROOT file per REGION
     for region in trex_config.get_region_list():
-        output_file_name = trex_config.get_job_block('Job') + "/Histograms/" + trex_config.get_job_block('InputName') + "_" + region['Region'] + "_histos.root"
-        fout = uproot.recreate( output_file_name )
+        output_file_name = trex_config.get_job_block('Job') \
+                           + "/Histograms/" + trex_config.get_job_block('InputName') \
+                           + "_" + region['Region'] + "_histos.root"
+        fout = uproot.recreate(output_file_name)
         binFromBinVariable = False
         try:
             region['Binning'].split(",")

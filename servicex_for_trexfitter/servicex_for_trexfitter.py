@@ -3,6 +3,7 @@ from .load_servicex_requests import LoadServiceXRequests
 from .communicate_servicex import ServiceXFrontend
 from .make_ntuples import make_ntuples
 
+
 class ServiceXTRExFitter:
 
     def __init__(self, trex_config):
@@ -16,13 +17,13 @@ class ServiceXTRExFitter:
         Return input TRExFitter configuration file as python dict
         """
         return self._trex_config.__dict__['_trex_config']
-    
+
     def view_trex_configuration(self):
         """
         Return input TRExFitter configuration file as python dict
         """
         return self._trex_config.view()
-    
+
     def get_ntuples(self, test_run=False):
         """
         Read input ntuples and produce histograms based on TRExFitter configuration file
@@ -41,4 +42,3 @@ class ServiceXTRExFitter:
         make_ntuples(self._trex_config, requests, output_parquet_list)
 
         return 'Ntuples are delivered!'
-    

@@ -1,6 +1,7 @@
 from pathlib import Path
 from parquet_to_root import parquet_to_root
 
+
 def make_ntuples(trex_config, sx_requests, output_parquet_list):
 
     if len(sx_requests) is len(output_parquet_list):
