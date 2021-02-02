@@ -33,7 +33,10 @@ setuptools.setup(name = "servicex_for_trexfitter",
         "servicex>=2.2b5", 
         "tcut-to-qastle>=0.4", 
         "parquet-to-root>=0.3.0",
-        "nest-asyncio>=1.3.3"
+        "nest-asyncio>=1.3.3",
+        "numpy>=1.15.4",
+        "pyarrow<3.0,>=2.0.0",
+        "tqdm>=4.43.0"
         ],
     classifiers = [
         "Development Status :: 3 - Alpha",
