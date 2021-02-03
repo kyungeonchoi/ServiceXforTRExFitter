@@ -1,5 +1,5 @@
 from pathlib import Path
-from parquet_to_root import parquet_to_root
+# from parquet_to_root import parquet_to_root
 
 
 def make_ntuples(trex_config, sx_requests, output_parquet_list):
@@ -17,6 +17,6 @@ def make_ntuples(trex_config, sx_requests, output_parquet_list):
     # ROOT file per SAMPLE
     for (request, output) in zip(sx_requests, output_parquet_list):
         output_file_name = trex_config.get_job_block('Job') + "/Data/" + request['Sample'] + ".root"
-        parquet_to_root(output, output_file_name, request['ntupleName'], verbose=False)
+        # parquet_to_root(output, output_file_name, request['ntupleName'], verbose=False)
 
     print(f"ROOT ntuples are delivered under {trex_config.get_job_block('Job')}/Data/")
