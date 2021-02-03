@@ -45,6 +45,6 @@ jobs:
         conda install -c conda-forge root
         conda install pytest
     - name: Test with pytest
-      run: |
-        pip install pytest
+      shell: bash -l {0}
+      run: |      
         pytest
