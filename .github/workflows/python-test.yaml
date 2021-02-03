@@ -36,7 +36,7 @@ jobs:
       with:
         auto-update-conda: true
         python-version: ${{ matrix.python-version }}
-      shell: bash -l {0}
+    - shell: bash -l {0}
       run: |
         conda info
         conda list
