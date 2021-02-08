@@ -107,3 +107,12 @@ class LoadTRExConfig():
         if region_list:
             return region_list
         raise KeyError('No Region is defined in the TRExFitter configuration file.')
+
+    def get_systematic_list(self):
+        systematic_list = []
+        for key, value in self._trex_config.items():
+            if key.startswith('Systematic'):
+                systematic_list.append(value)
+        if systematic_list:
+            return systematic_list
+        raise KeyError('No Sample is defined in the TRExFitter configuration file.')

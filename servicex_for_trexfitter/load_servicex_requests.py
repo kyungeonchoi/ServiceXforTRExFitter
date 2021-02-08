@@ -19,14 +19,15 @@ class LoadServiceXRequests():
         request_list = []
 
         if output_type == 'ntuple':
-            for sample in self._trex_config.get_sample_list():      # Sample
+            for sample in self._trex_config.get_sample_list():      # One ServiceX request per sample
                 req = {}
                 req['Sample'] = sample['Sample']
                 req['gridDID'] = sample['GridDID']
                 req['ntupleName'] = self._trex_config.get_ntuple_name()
                 req['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                                self.get_columns_in_job() +
-                                                               self.get_columns_in_sample(sample)))))
+                                                               self.get_columns_in_sample(sample) +
+                                                               self.get_columns_in_systematic(sample['Sample'])))))
                 req['selection'] = self.replace_XXX(sample['Selection'])
                 request_list.append(req)
         elif output_type == 'histogram':
@@ -115,6 +116,31 @@ class LoadServiceXRequests():
         if 'MCweight' in sample:
             columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(sample['MCweight']))
         return columns
+
+    def get_columns_in_systematic(self, sample):
+        """
+        Returns additional brancheds from systematics for the given sample
+        """
+        columns = []
+        for systematic in self._trex_config.get_systematic_list():
+            flag = False
+            if 'Samples' in systematic:
+                if sample in self.replace_XXX(systematic['Samples']).split(','):
+                    flag = True
+            if 'Exclude' in systematic:
+                if sample in self.replace_XXX(systematic['Exclude']).split(','):
+                    flag = False
+            if flag:
+                if 'WeightSufUp' in systematic:
+                    columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(systematic['WeightSufUp']))
+                if 'WeightSufDown' in systematic:
+                    columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(systematic['WeightSufDown']))
+                if 'WeightUp' in systematic:
+                    columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(systematic['WeightUp']))
+                if 'WeightDown' in systematic:
+                    columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(systematic['WeightDown']))
+        # print(columns)
+        return columns  # Duplicates will be removed in prepare_requests()
 
     def view(self):
         return print(json.dumps(self._servicex_requests, indent=4))

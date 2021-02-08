@@ -11,6 +11,7 @@ class ServiceXTRExFitter:
         self._trex_config    Python Dict format of input TRExFitter configuration file
         """
         self._trex_config = LoadTRExConfig(trex_config)
+        self._servicex_requests = LoadServiceXRequests(self._trex_config, 'ntuple')
 
     def get_trex_configuration(self):
         """
@@ -29,7 +30,7 @@ class ServiceXTRExFitter:
         Read input ntuples and produce histograms based on TRExFitter configuration file
         """
 
-        self._servicex_requests = LoadServiceXRequests(self._trex_config, 'ntuple')
+        # self._servicex_requests = LoadServiceXRequests(self._trex_config, 'ntuple')
         requests = self._servicex_requests.__dict__['_servicex_requests']
 
         # Configure ServiceX Frontend to connect ServiceX backend
