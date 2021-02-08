@@ -30,7 +30,7 @@ class LoadServiceXRequests():
                                                                self.get_columns_in_systematic(sample['Sample'])))))
                 req['selection'] = self.replace_XXX(sample['Selection'])
                 request_list.append(req)
-                for systematic in self._trex_config.get_systematic_list():                    
+                for systematic in self._trex_config.get_systematic_list():
                     flag = False
                     if 'Samples' in systematic:
                         if sample['Sample'] in self.replace_XXX(systematic['Samples']).split(','):
@@ -45,8 +45,8 @@ class LoadServiceXRequests():
                             req_sys['gridDID'] = sample['GridDID']
                             req_sys['ntupleName'] = systematic['NtupleNameUp']
                             req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
-                                                                        self.get_columns_in_job() +
-                                                                        self.get_columns_in_sample(sample)))))
+                                                                               self.get_columns_in_job() +
+                                                                               self.get_columns_in_sample(sample)))))
                             req_sys['selection'] = self.replace_XXX(sample['Selection'])
                             request_list.append(req_sys)
                         if 'NtupleNameDown' in systematic:
@@ -55,13 +55,10 @@ class LoadServiceXRequests():
                             req_sys['gridDID'] = sample['GridDID']
                             req_sys['ntupleName'] = systematic['NtupleNameDown']
                             req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
-                                                                        self.get_columns_in_job() +
-                                                                        self.get_columns_in_sample(sample)))))
+                                                                               self.get_columns_in_job() +
+                                                                               self.get_columns_in_sample(sample)))))
                             req_sys['selection'] = self.replace_XXX(sample['Selection'])
                             request_list.append(req_sys)
-
-
-
         elif output_type == 'histogram':
             for region in self._trex_config.get_region_list():      # Region
                 for sample in self._trex_config.get_sample_list():  # Sample

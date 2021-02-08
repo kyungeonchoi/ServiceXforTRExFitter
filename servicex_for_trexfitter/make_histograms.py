@@ -26,7 +26,7 @@ def make_histograms(trex_config, sx_requests, output_parquet_list):
             region['Binning'].split(",")
             binFromBinVariable = True
         except KeyError:
-            print(f'Histogram binning from "Region/Binning"')
+            print("Histogram binning from 'Region/Binning'")
         if binFromBinVariable:
             hist_binning = [float(s) for s in region['Binning'].split(',')]
         else:
