@@ -38,15 +38,13 @@ to deliver only data used by TRExFitter interactively. -->
 
 The following items of TRExFitter configuration need to be modified to be compatible with the library:
 
-- In `Job` block:  `NtuplePaths` has to be `<YOUR JOB NAME>/Data`
+- In `Job` block: specify `NtuplePath` in a form of `<Output Path>/Data`
 - In `Sample` block: specify NEW option `GridDID` for each `Sample`, where `GridDID` is a Rucio data indentifier which includes scope and name. 
 - In `Sample` block: `NtupleFile` has to be the same name as `Sample` name
 
 An example TRExFitter configuration can be found [here](https://github.com/kyungeonchoi/ServiceXforTRExFitter/blob/development/config/v9fit_simple.config).
 
-N.B. `Systematic` block is not supported yet (will be supported in the future version)
-
-N.B. Tenary operation in the `Selection` is not supported yet
+N.B. Tenary operation is not supported yet
 
 ### Delivery of slimmed/skimmed ROOT ntuples
 <!-- ```
