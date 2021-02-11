@@ -113,6 +113,6 @@ class LoadTRExConfig():
         for key, value in self._trex_config.items():
             if key.startswith('Systematic'):
                 systematic_list.append(value)
-        if systematic_list:
-            return systematic_list
-        raise KeyError('No Sample is defined in the TRExFitter configuration file.')
+        # if systematic_list:
+        return systematic_list
+        # raise KeyError('No Sample is defined in the TRExFitter configuration file.')
