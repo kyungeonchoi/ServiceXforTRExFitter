@@ -18,7 +18,7 @@ class ServiceXFrontend:
         """
         max_workers = 4
         ignore_cache = False
-        uproot_transformer_image = "sslhep/servicex_func_adl_uproot_transformer:v1.0.0-rc.3"
+        uproot_transformer_image = "sslhep/servicex_func_adl_uproot_transformer:develop"
         list_sx_dataset_query_pair = []
         for request in servicex_requests:
             list_sx_dataset_query_pair.append(
