@@ -58,18 +58,6 @@ class LoadTRExConfig():
             return self._trex_config['Job0'][field_name]
         raise KeyError(f'{field_name} is missing in the TRExFitter configuration file.')
 
-    def get_lumi(self):
-        lumi = self._trex_config['Job0']['Lumi'].split('%')[0].strip()
-        if re.findall(r'(XXX_\w+)', lumi):
-            replacements = re.findall(r'(XXX_\w+)', lumi)
-            replacement_file = self._trex_config['Job0']['ReplacementFile']
-            with open(replacement_file) as replacementFile:
-                for line in enumerate(replacementFile.readlines()):
-                    for xxx in replacements:
-                        if re.search(rf'{xxx}\b', line[1]):
-                            lumi = re.sub(xxx, line[1].strip(xxx + ":").strip(), lumi)
-        return float(lumi)
-
     def get_job_name(self):
         if self._trex_config['Job0']['Job'] is not None:
             return self._trex_config['Job0']['Job']

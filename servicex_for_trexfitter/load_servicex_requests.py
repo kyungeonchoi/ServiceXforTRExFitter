@@ -109,20 +109,22 @@ class LoadServiceXRequests():
 
     def replace_XXX(self, selection):
         if re.findall(r'(XXX_\w+)', selection):
-            replacements = re.findall(r'(XXX_\w+)', selection)
+            replacements = re.findall(r'(XXX_\w+)', selection)            
             replacement_file = self._trex_config.get_replacement_file()
             with open(replacement_file) as replacementFile:
                 for line in enumerate(replacementFile.readlines()):
-                    for xxx in replacements:
-                        if re.search(rf'{xxx}\b', line[1]):
-                            selection = re.sub(xxx, line[1].strip(xxx + ":").rstrip(), selection)
+                    if not line[1].startswith('#'):
+                        for xxx in replacements:
+                            if re.search(rf'{xxx}\b', line[1]):
+                                selection = re.sub(xxx, line[1].strip(xxx + ":").rstrip(), selection)
         return selection
 
     def get_columns_in_all_region(self):
         columns = []
         for region in self._trex_config.get_region_list():  # Region
             if 'Variable' in region:
-                columns.append(region['Variable'].split(",")[0])
+                if not region['Variable'].split(",")[0][0].isdigit():
+                    columns.append(region['Variable'].split(",")[0])
             if 'Selection' in region:
                 columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(region['Selection']))
             if 'MCweight' in region:
