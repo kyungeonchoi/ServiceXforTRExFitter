@@ -83,8 +83,7 @@ class LoadServiceXRequests():
         # For each match, look-up corresponding value in dictionary
         return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
-    def get_list_of_columns_in_string(self, tcut_selection: str):
-        # 1st step: recognize all variable names
+    def get_list_of_columns_in_string(self, tcut_selection: str):        
         ignore_patterns = {  # These are supported by Qastle
             "abs": " ",
             "(": " ",
@@ -92,7 +91,8 @@ class LoadServiceXRequests():
             "*": " ",
             "/": " ",
             "+": " ",
-            "-": " "
+            "-": " ",
+            "sqrt": " "
         }
         remove_patterns = self._multiple_replace(ignore_patterns, tcut_selection)
         remove_marks = re.sub(r'[\?:<&>!=|-]', ' ', remove_patterns)  # Add ?, : for ternary
