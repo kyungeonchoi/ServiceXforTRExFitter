@@ -32,11 +32,11 @@ class LoadServiceXRequests():
                 request_list.append(req)
                 for systematic in self._trex_config.get_systematic_list():
                     flag = False
-                    if 'Samples' in systematic:
-                        if sample['Sample'] in self.replace_XXX(systematic['Samples']).split(','):
+                    if 'Samples' in systematic:                        
+                        if sample['Sample'] in [sam.strip() for sam in self.replace_XXX(systematic['Samples']).split(',')]:
                             flag = True
                     if 'Exclude' in systematic:
-                        if sample['Sample'] in self.replace_XXX(systematic['Exclude']).split(','):
+                        if sample['Sample'] in [sam.strip() for sam in self.replace_XXX(systematic['Exclude']).split(',')]:
                             flag = False
                     if flag:
                         if 'NtupleNameUp' in systematic:
