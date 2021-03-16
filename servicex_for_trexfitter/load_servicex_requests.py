@@ -28,7 +28,7 @@ class LoadServiceXRequests():
                                                                self.get_columns_in_job() +
                                                                self.get_columns_in_sample(sample) +
                                                                self.get_columns_in_systematic(sample['Sample'])))))
-                req['selection'] = self.replace_XXX(sample['Selection'])
+                req['selection'] = self.get_selection(sample)
                 request_list.append(req)
                 for systematic in self._trex_config.get_systematic_list():
                     flag = False
@@ -172,6 +172,18 @@ class LoadServiceXRequests():
                     columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(systematic['WeightDown']))
         # print(columns)
         return columns  # Duplicates will be removed in prepare_requests()
+
+    def get_selection(self, sample):
+        selection = ""
+        job = self._trex_config.__dict__['_trex_config']['Job0']
+        if 'Selection' in job:
+            selection = self.replace_XXX(job['Selection'])
+        if 'Selection' in sample:
+            if selection == "":
+                selection = self.replace_XXX(sample['Selection'])
+            else:
+                selection = selection + " && " + self.replace_XXX(sample['Selection'])
+        return selection
 
     def view(self):
         return print(json.dumps(self._servicex_requests, indent=4))
