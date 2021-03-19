@@ -21,7 +21,7 @@ def make_ntuples(trex_config, sx_requests, output_parquet_list):
     for (request, output) in zip(sx_requests, output_parquet_list):
         # output_file_name = trex_config.get_job_block('Job') + "/Data/" + request['Sample'] + ".root"
         output_file_name = trex_config.get_job_block('NtuplePath') + "/" + request['Sample'] + ".root"
-        
+
         sam = request['Sample']
         if sam is not sam_old:
             print(f"  Sample: {sam}")
