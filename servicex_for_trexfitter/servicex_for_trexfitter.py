@@ -12,7 +12,7 @@ class ServiceXTRExFitter:
         self._trex_config    Python Dict format of input TRExFitter configuration file
         """
         self._trex_config = LoadTRExConfig(trex_config)
-        self._servicex_requests = LoadServiceXRequests(self._trex_config, 'ntuple')
+        self._servicex_requests = LoadServiceXRequests(self._trex_config)
 
     def get_trex_configuration(self):
         """
@@ -30,8 +30,8 @@ class ServiceXTRExFitter:
         """
         Get ROOT ntuples which contain minimal information to run the TRExFitter configuration file
         """
-        
-        times = {}        
+
+        times = {}
         # Load ServiceX requests
         requests = self._servicex_requests.__dict__['_servicex_requests']
 
@@ -39,13 +39,13 @@ class ServiceXTRExFitter:
         sx = ServiceXFrontend(requests)
 
         # Get a list of parquet files for each ServiceX request
-        times.update({'t0':time.monotonic()})
+        times.update({'t0': time.monotonic()})
         output_parquet_list = sx.get_servicex_data()
-        times.update({'t1':time.monotonic()})
+        times.update({'t1': time.monotonic()})
 
         # Produce ROOT ntuples
         output_path = make_ntuples(self._trex_config, requests, output_parquet_list)
-        times.update({'t2':time.monotonic()})
+        times.update({'t2': time.monotonic()})
 
         if timer:
             width = 50
@@ -56,5 +56,5 @@ class ServiceXTRExFitter:
             print("--------------------------".rjust(width))
             print(f"Total time: {str(round(times['t2'] - times['t0'], 1))} sec".rjust(width))
         print("\n")
-        
+
         return print(f"ROOT ntuples are delivered under {output_path}")

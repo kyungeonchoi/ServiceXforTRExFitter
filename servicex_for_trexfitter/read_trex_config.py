@@ -17,7 +17,7 @@ def read_configuration(confFile: str, block_name: str):
                 inlines = mark + 2
                 while inlines:
                     inline = linecache.getline(confFile, inlines)
-                    if len(re.findall("^ *", inline)[0]) is 2 or len(re.findall("^ *", inline)[0]) is 1:
+                    if len(re.findall("^ *", inline)[0]) == 2 or len(re.findall("^ *", inline)[0]) == 1:
                         if inline.strip():  # Check empty line
                             if len(inline.split(":")) == 3:  # For GridDID
                                 block[block_name+str(num)][inline.split(":")[0].strip()] = \

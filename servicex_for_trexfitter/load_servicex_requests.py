@@ -6,75 +6,77 @@ class LoadServiceXRequests():
     """
     Prepare ServiceXDataset and query pairs from input TRExFitter config
     """
-    def __init__(self, trex_config, output_type):
+    def __init__(self, trex_config):
         self._trex_config = trex_config
 
         print('Prepare ServiceX requests..')
-        self._servicex_requests = self.prepare_requests(output_type)
+        self._servicex_requests = self.prepare_requests()
 
-    def prepare_requests(self, output_type):
-        """
-        TODO: selection from Job block
-        """
+    def prepare_requests(self):
         request_list = []
 
-        if output_type == 'ntuple':
-            for sample in self._trex_config.get_sample_list():      # One ServiceX request per sample
-                req = {}
-                req['Sample'] = sample['Sample']
-                req['gridDID'] = sample['GridDID']
-                req['ntupleName'] = self._trex_config.get_ntuple_name()
-                req['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
-                                                               self.get_columns_in_job() +
-                                                               self.get_columns_in_sample(sample) +
-                                                               self.get_columns_in_systematic(sample['Sample'])))))
-                req['selection'] = self.get_selection(sample)
-                request_list.append(req)
-                for systematic in self._trex_config.get_systematic_list():
-                    flag = False
-                    if 'Samples' in systematic:                        
-                        if sample['Sample'] in [sam.strip() for sam in self.replace_XXX(systematic['Samples']).split(',')]:
-                            flag = True
-                    if 'Exclude' in systematic:
-                        if sample['Sample'] in [sam.strip() for sam in self.replace_XXX(systematic['Exclude']).split(',')]:
-                            flag = False
-                    if flag:
-                        if 'NtupleNameUp' in systematic:
-                            req_sys = {}
-                            req_sys['Sample'] = sample['Sample']
-                            req_sys['gridDID'] = sample['GridDID']
-                            req_sys['ntupleName'] = systematic['NtupleNameUp']
-                            req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
-                                                                               self.get_columns_in_job() +
-                                                                               self.get_columns_in_sample(sample)))))
-                            req_sys['selection'] = self.replace_XXX(sample['Selection'])
-                            request_list.append(req_sys)
-                        if 'NtupleNameDown' in systematic:
-                            req_sys = {}
-                            req_sys['Sample'] = sample['Sample']
-                            req_sys['gridDID'] = sample['GridDID']
-                            req_sys['ntupleName'] = systematic['NtupleNameDown']
-                            req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
-                                                                               self.get_columns_in_job() +
-                                                                               self.get_columns_in_sample(sample)))))
-                            req_sys['selection'] = self.replace_XXX(sample['Selection'])
-                            request_list.append(req_sys)
-        elif output_type == 'histogram':
-            for region in self._trex_config.get_region_list():      # Region
-                for sample in self._trex_config.get_sample_list():  # Sample
-                    req = {}
-                    req['Region'] = region['Region']
-                    req['Variable'] = region['Variable']
-                    req['Binning'] = region['Binning']
-                    req['Sample'] = sample['Sample']
-                    req['gridDID'] = sample['GridDID']
-                    req['ntupleName'] = self._trex_config.get_ntuple_name()
-                    req['columns'] = region['Variable'].split(",")[0] + ',' \
-                        + self.get_columns(self.replace_XXX(sample['MCweight']))
-                    req['selection'] = self.replace_XXX(sample['Selection']) + ' && ' + self.replace_XXX(region['Selection'])
-                    request_list.append(req)
+        for sample in self._trex_config.get_sample_list():
+            # Request for nominal and systematic only requires additional branches
+            request_list.append(self.request_for_nominal(sample))
+
+            # Request for systematics
+            if sample != 'Data':
+                request_list += self.request_for_systematic(sample)
 
         return request_list
+
+    def request_for_nominal(self, sample):
+        req = {}
+        req['Sample'] = sample['Sample']
+        req['gridDID'] = sample['GridDID']
+        req['ntupleName'] = self._trex_config.get_ntuple_name()
+        if sample['Sample'] == 'Data':
+            req['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
+                                                           self.get_columns_in_job() +
+                                                           self.get_columns_in_sample(sample)))))
+        else:
+            req['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
+                                                           self.get_columns_in_job() +
+                                                           self.get_columns_in_sample(sample) +
+                                                           self.get_columns_in_systematic(sample['Sample'])))))
+
+        req['selection'] = self.get_selection(sample)
+        return req
+
+    def request_for_systematic(self, sample):
+        request_sys_list = []
+        for systematic in self._trex_config.get_systematic_list():
+            flag = False
+            if 'Samples' in systematic:
+                if sample['Sample'] in [sam.strip() for sam in self.replace_XXX(systematic['Samples']).split(',')]:
+                    flag = True
+                if 'Exclude' in systematic:
+                    if sample['Sample'] in [sam.strip() for sam in self.replace_XXX(systematic['Exclude']).split(',')]:
+                        flag = False
+            else:
+                flag = True
+            if flag:
+                if 'NtupleNameUp' in systematic:
+                    req_sys = {}
+                    req_sys['Sample'] = sample['Sample']
+                    req_sys['gridDID'] = sample['GridDID']
+                    req_sys['ntupleName'] = systematic['NtupleNameUp']
+                    req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
+                                                                       self.get_columns_in_job() +
+                                                                       self.get_columns_in_sample(sample)))))
+                    req_sys['selection'] = self.replace_XXX(sample['Selection'])
+                    request_sys_list.append(req_sys)
+                if 'NtupleNameDown' in systematic:
+                    req_sys = {}
+                    req_sys['Sample'] = sample['Sample']
+                    req_sys['gridDID'] = sample['GridDID']
+                    req_sys['ntupleName'] = systematic['NtupleNameDown']
+                    req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
+                                                                       self.get_columns_in_job() +
+                                                                       self.get_columns_in_sample(sample)))))
+                    req_sys['selection'] = self.replace_XXX(sample['Selection'])
+                    request_sys_list.append(req_sys)
+        return request_sys_list
 
     def _multiple_replace(self, dict, text):
         # Create a regular expression  from the dictionary keys
@@ -83,7 +85,7 @@ class LoadServiceXRequests():
         # For each match, look-up corresponding value in dictionary
         return regex.sub(lambda mo: dict[mo.string[mo.start():mo.end()]], text)
 
-    def get_list_of_columns_in_string(self, tcut_selection: str):        
+    def get_list_of_columns_in_string(self, tcut_selection: str):
         ignore_patterns = {  # These are supported by Qastle
             "abs": " ",
             "(": " ",
@@ -109,7 +111,7 @@ class LoadServiceXRequests():
 
     def replace_XXX(self, selection):
         if re.findall(r'(XXX_\w+)', selection):
-            replacements = re.findall(r'(XXX_\w+)', selection)            
+            replacements = re.findall(r'(XXX_\w+)', selection)
             replacement_file = self._trex_config.get_replacement_file()
             with open(replacement_file) as replacementFile:
                 for line in enumerate(replacementFile.readlines()):
@@ -158,9 +160,11 @@ class LoadServiceXRequests():
             if 'Samples' in systematic:
                 if sample in self.replace_XXX(systematic['Samples']).split(','):
                     flag = True
-            if 'Exclude' in systematic:
-                if sample in self.replace_XXX(systematic['Exclude']).split(','):
-                    flag = False
+                if 'Exclude' in systematic:
+                    if sample in self.replace_XXX(systematic['Exclude']).split(','):
+                        flag = False
+            else:
+                flag = True
             if flag:
                 if 'WeightSufUp' in systematic:
                     columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(systematic['WeightSufUp']))
