@@ -136,16 +136,16 @@ class LoadServiceXRequests():
     def get_columns_in_job(self):
         columns = []
         job = self._trex_config.__dict__['_trex_config']['Job0']
-        if 'Selection' in job:
-            columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(job['Selection']))
+        # if 'Selection' in job:
+        #     columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(job['Selection']))
         if 'MCweight' in job:
             columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(job['MCweight']))
         return columns
 
     def get_columns_in_sample(self, sample):
         columns = []
-        if 'Selection' in sample:
-            columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(sample['Selection']))
+        # if 'Selection' in sample:
+        #     columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(sample['Selection']))
         if 'MCweight' in sample:
             columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(sample['MCweight']))
         return columns
