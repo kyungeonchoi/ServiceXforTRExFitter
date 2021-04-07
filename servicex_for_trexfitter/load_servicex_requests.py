@@ -64,7 +64,8 @@ class LoadServiceXRequests():
                     req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                                        self.get_columns_in_job() +
                                                                        self.get_columns_in_sample(sample)))))
-                    req_sys['selection'] = self.replace_XXX(sample['Selection'])
+                    # req_sys['selection'] = self.replace_XXX(sample['Selection'])
+                    req_sys['selection'] = self.get_selection(sample)
                     request_sys_list.append(req_sys)
                 if 'NtupleNameDown' in systematic:
                     req_sys = {}
@@ -74,7 +75,8 @@ class LoadServiceXRequests():
                     req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                                        self.get_columns_in_job() +
                                                                        self.get_columns_in_sample(sample)))))
-                    req_sys['selection'] = self.replace_XXX(sample['Selection'])
+                    # req_sys['selection'] = self.replace_XXX(sample['Selection'])
+                    req_sys['selection'] = self.get_selection(sample)
                     request_sys_list.append(req_sys)
         return request_sys_list
 
@@ -178,16 +180,32 @@ class LoadServiceXRequests():
         return columns  # Duplicates will be removed in prepare_requests()
 
     def get_selection(self, sample):
-        selection = ""
+        """
+        Return selection query from Job, Sample, and Region blocks
+        """
+        # Selection in Job block
         job = self._trex_config.__dict__['_trex_config']['Job0']
         if 'Selection' in job:
-            selection = self.replace_XXX(job['Selection'])
+            selection_job = self.replace_XXX(job['Selection'])
+        else:
+            selection_job = "1"
+        
+        # Selection in Sample block
         if 'Selection' in sample:
-            if selection == "":
-                selection = self.replace_XXX(sample['Selection'])
-            else:
-                selection = selection + " && " + self.replace_XXX(sample['Selection'])
-        return selection
+            selection_sample = self.replace_XXX(sample['Selection'])
+        else:
+            selection_sample = "1"
+
+        # Selection in Region block
+        selection_region = ""
+        for region in self._trex_config.get_region_list():
+            if 'Selection' in region:
+                if selection_region == "":
+                    selection_region = "(" + self.replace_XXX(region['Selection']) + ")"
+                else:    
+                    selection_region = selection_region + " || " + "(" + self.replace_XXX(region['Selection']) + ")"
+
+        return selection_job + " && " + selection_sample + " && " + "(" + selection_region + ")"
 
     def view(self):
         return print(json.dumps(self._servicex_requests, indent=4))

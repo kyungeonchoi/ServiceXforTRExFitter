@@ -3,4 +3,4 @@
 from .servicex_for_trexfitter import ServiceXTRExFitter
 
 __all__ = ['ServiceXTRExFitter', ]
-__version__ = '0.7.0'
+__version__ = '0.7.1'
