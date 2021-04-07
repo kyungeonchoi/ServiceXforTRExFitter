@@ -6,7 +6,7 @@
 
 [`TRExFitter`](https://gitlab.cern.ch/TRExStats/TRExFitter) is a popular framework to perform profile likelihood fits in ATLAS experiment. It takes ROOT histograms or ntuples as input. Long turnaround time of ntuple reading for large and/or remote data would slow down the whole analysis.
 
-`ServiceXforTRExFitter` is a python library to interface ServiceX into TRExFitter framework. It provides an alternative method to produce histograms out of ROOT ntuples. 
+`servicex-for-trexfitter` is a python library to interface ServiceX into TRExFitter framework. It provides an alternative method to produce histograms out of ROOT ntuples. 
 
 <!-- Primary goal is the fast delivery of histograms from ROOT ntuples, which replaces TRExFitter option `n`.  -->
 
@@ -34,13 +34,19 @@ to deliver only data used by TRExFitter interactively. -->
 
 ## Usage
 
+### Installation
+
+The library is published at PyPI: [servicex-for-trexfitter](https://pypi.org/project/servicex-for-trexfitter/)
+
 ### Prepare TRExFitter configuration
 
 The following items of TRExFitter configuration need to be modified to be compatible with the library:
 
-- In `Job` block: specify `NtuplePath` in a form of `<Output Path>/Data`
+- In `Job` block
+    - `NtuplePath` as `<Output Path>/Data`
+    - Set `UseServiceX` as `TRUE`
 - In `Sample` block: specify NEW option `GridDID` for each `Sample`, where `GridDID` is a Rucio data indentifier which includes scope and name. 
-- In `Sample` block: `NtupleFile` has to be the same name as `Sample` name
+- In `Sample` block: `NtupleFile` has to be the same as `Sample` name
 
 An example TRExFitter configuration can be found [here](https://github.com/kyungeonchoi/ServiceXforTRExFitter/blob/development/config/v9fit_simple.config).
 
@@ -70,9 +76,9 @@ It will initiate ServiceX transformation(s) based on your TRExFitter configurati
 
 ### Prepare histograms from delivered ROOT ntuples
 
-Now you can run TRExFitter with the action `n` to read input ntuples from the delivered ROOT ntuples. 
-Given that the current TRExFitter framework doesn't support `ServiceXforTRExFitter` yet, the option `GridDID` in `Sample` block has to be deleted before you run TRExFitter.
-
+- You need to checkout the branch `feat/servicex-integration` of TRExFitter framework to be compatible with the `servicex-for-trexfitter`.
+- Now you can run TRExFitter action `n` to generate histograms from the ServiceX delivered ROOT ntuples. 
+<!-- Given that the current TRExFitter framework doesn't support `ServiceXforTRExFitter` yet, the option `GridDID` in `Sample` block has to be deleted before you run TRExFitter. -->
 
 ## Acknowledgements
 Support for this work was provided by the the U.S. Department of Energy, Office of High Energy Physics under Grant No. DE-SC0007890
