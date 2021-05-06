@@ -39,7 +39,7 @@ setuptools.setup(name="servicex_for_trexfitter",
                     "nest-asyncio>=1.3.3",
                     "numpy>=1.15.4",
                     "pyarrow<3.0,>=2.0.0",
-                    "tqdm>=4.43.0"
+                    "tqdm>=4.60.0"
                     ],
                  classifiers=[
                     "Development Status :: 3 - Alpha",
