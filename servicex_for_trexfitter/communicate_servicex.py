@@ -1,6 +1,6 @@
 import asyncio
 import tcut_to_qastle as tq
-from servicex.servicex import ServiceXDataset
+from servicex import ServiceXDataset
 from aiohttp import ClientSession
 
 class ServiceXFrontend:
