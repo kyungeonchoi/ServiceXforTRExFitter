@@ -1,8 +1,7 @@
 import asyncio
-import nest_asyncio
 import tcut_to_qastle as tq
 from servicex import ServiceXDataset
-
+from aiohttp import ClientSession
 
 class ServiceXFrontend:
 
@@ -10,27 +9,7 @@ class ServiceXFrontend:
         """
         self._list_sx_dataset_query_pair   List of ServiceX dataset and query pair
         """
-        self._list_sx_dataset_query_pair = self._load_servicex_fe(servicex_requests)
-
-    def _load_servicex_fe(self, servicex_requests):
-        """
-        Setup ServiceX Frontend and return ServiceXDataset and query pairs
-        """
-        max_workers = 4
-        ignore_cache = False
-        uproot_transformer_image = "sslhep/servicex_func_adl_uproot_transformer:develop"
-        list_sx_dataset_query_pair = []
-        for request in servicex_requests:
-            list_sx_dataset_query_pair.append(
-                (ServiceXDataset(dataset=request['gridDID'],
-                                 backend_type='uproot',
-                                 image=uproot_transformer_image,
-                                 max_workers=max_workers,
-                                 ignore_cache=ignore_cache),
-                 tq.translate(request['ntupleName'],
-                              request['columns'],
-                              request['selection'])))
-        return list_sx_dataset_query_pair
+        self._servicex_requests = servicex_requests
 
     def get_servicex_data(self, test_run=False):
         """
@@ -38,12 +17,23 @@ class ServiceXFrontend:
         """
         print("Retrieving data from ServiceX Uproot backend..")
 
-        async def _get_my_data(list_query):
-            return await asyncio.gather(*list_query)
+        async def bound_get_data(sem, sx_ds, query):
+            async with sem:
+                return await sx_ds.get_data_parquet_async(query)
 
-        nest_asyncio.apply()
+        async def _get_my_data():
+            sem = asyncio.Semaphore(50)
+            tasks = []
+            ignore_cache = True
+            uproot_transformer_image = "sslhep/servicex_func_adl_uproot_transformer:develop"
+            async with ClientSession() as session:
+                for request in self._servicex_requests:
+                    sx_ds = ServiceXDataset(dataset=request['gridDID'], backend_type='uproot', image=uproot_transformer_image, session_generator=session, ignore_cache=ignore_cache)
+                    query = tq.translate(request['ntupleName'], request['columns'], request['selection'])
+                    task = asyncio.ensure_future(bound_get_data(sem, sx_ds, query))
+                    tasks.append(task)
+                return await asyncio.gather(*tasks)
 
-        list_query = [pair[0].get_data_parquet_async(pair[1]) for pair in self._list_sx_dataset_query_pair]
         newloop = asyncio.get_event_loop()
-        data = newloop.run_until_complete(_get_my_data(list_query))
+        data = newloop.run_until_complete(_get_my_data())
         return data
