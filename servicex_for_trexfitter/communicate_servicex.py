@@ -1,7 +1,9 @@
 import asyncio
+from aiohttp.connector import BaseConnector
 import tcut_to_qastle as tq
 from servicex import ServiceXDataset
 from aiohttp import ClientSession
+
 
 class ServiceXFrontend:
 
@@ -22,14 +24,20 @@ class ServiceXFrontend:
                 return await sx_ds.get_data_parquet_async(query)
 
         async def _get_my_data():
-            sem = asyncio.Semaphore(50)
+            sem = asyncio.Semaphore(50) # Limit maximum concurrent ServiceX requests
             tasks = []
             ignore_cache = True
             uproot_transformer_image = "sslhep/servicex_func_adl_uproot_transformer:develop"
             async with ClientSession() as session:
                 for request in self._servicex_requests:
-                    sx_ds = ServiceXDataset(dataset=request['gridDID'], backend_type='uproot', image=uproot_transformer_image, session_generator=session, ignore_cache=ignore_cache)
-                    query = tq.translate(request['ntupleName'], request['columns'], request['selection'])
+                    sx_ds = ServiceXDataset(dataset=request['gridDID'], \
+                        backend_type='uproot', \
+                        image=uproot_transformer_image, \
+                        session_generator=session, \
+                        ignore_cache=ignore_cache)
+                    query = tq.translate(request['ntupleName'], \
+                        request['columns'], \
+                        request['selection'])
                     task = asyncio.ensure_future(bound_get_data(sem, sx_ds, query))
                     tasks.append(task)
                 return await asyncio.gather(*tasks)
