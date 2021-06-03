@@ -25,7 +25,7 @@ class ServiceXFrontend:
         async def _get_my_data():
             sem = asyncio.Semaphore(50) # Limit maximum concurrent ServiceX requests
             tasks = []
-            ignore_cache = True
+            ignore_cache = False
             uproot_transformer_image = "sslhep/servicex_func_adl_uproot_transformer:develop"
             async with ClientSession() as session:
                 for request in self._servicex_requests:
