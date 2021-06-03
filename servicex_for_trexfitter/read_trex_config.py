@@ -13,7 +13,8 @@ def read_configuration(confFile: str, block_name: str):
         for mark, line in enumerate(configFile.readlines()):
             if re.search(r'\b{}\b'.format(block_name), line):
                 block[block_name+str(num)] = {}
-                block[block_name+str(num)][line.split()[0].strip(':')] = line.split(":")[1].strip("\n").strip().strip('\"')
+                block[block_name+str(num)][line.split()[0].strip(':')] \
+                    = line.split(":")[1].strip("\n").strip().strip('\"')
                 inlines = mark + 2
                 while inlines:
                     inline = linecache.getline(confFile, inlines)
@@ -31,7 +32,6 @@ def read_configuration(confFile: str, block_name: str):
                     inlines += 1
         return block
 
-
 def load_trex_config(confFile: str):
     """
     Load TRExFitter config file as a python dictionary
@@ -41,7 +41,6 @@ def load_trex_config(confFile: str):
     samples = read_configuration(confFile, "Sample")
     systematics = read_configuration(confFile, "Systematic")
     return {**job, **regions, **samples, **systematics}
-
 
 class LoadTRExConfig():
     """

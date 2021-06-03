@@ -2,7 +2,7 @@ import time
 from .read_trex_config import LoadTRExConfig
 from .load_servicex_requests import LoadServiceXRequests
 from .communicate_servicex import ServiceXFrontend
-from .make_ntuples import make_ntuples
+from .make_ntuples import MakeNtuples
 
 
 class ServiceXTRExFitter:
@@ -44,7 +44,8 @@ class ServiceXTRExFitter:
         times.update({'t1': time.monotonic()})
 
         # Produce ROOT ntuples
-        output_path = make_ntuples(self._trex_config, requests, output_parquet_list)
+        mn = MakeNtuples(self._trex_config)
+        output_path = mn.make_ntuples(requests, output_parquet_list)
         times.update({'t2': time.monotonic()})
 
         if timer:
