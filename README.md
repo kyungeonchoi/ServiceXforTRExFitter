@@ -50,7 +50,7 @@ The following items of TRExFitter configuration need to be modified to be compat
 
 An example TRExFitter configuration can be found [here](https://github.com/kyungeonchoi/ServiceXforTRExFitter/blob/development/config/example.config).
 
-Most of standard TCut expressions for `Selection` are supported, but special functions like `Sum$(formula)` are not supported. Please find more about TCut expression [here](https://github.com/ssl-hep/TCutToQastleWrapper).
+Most of standard TCut expressions for `Selection` are supported, but special functions like `Sum$(formula)` are not supported. Please find more about the supported TCut expression [here](https://github.com/ssl-hep/TCutToQastleWrapper).
 
 ### Delivery of slimmed/skimmed ROOT ntuples
 <!-- ```
