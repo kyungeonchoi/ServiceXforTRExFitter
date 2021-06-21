@@ -2,6 +2,7 @@ from pathlib import Path
 from parquet_to_root import parquet_to_root
 from ROOT import TFile
 from multiprocessing import Pool, cpu_count
+import tqdm
 
 class MakeNtuples:
 
@@ -11,7 +12,7 @@ class MakeNtuples:
     def write_root_ntuple(self, results):
 
         sam = results[0][0]['Sample']
-        print(f"Writing Sample - {sam}")
+        # print(f"Writing Sample - {sam}")
 
         output_file_name = f"{self._trex_config.get_job_block('NtuplePath')}/{sam}.root"
         
@@ -58,6 +59,7 @@ class MakeNtuples:
 
         nproc = min(len(samples), int(cpu_count()/2))
         with Pool(processes=nproc) as pool:
-            pool.map(self.write_root_ntuple, results_ordered)
+            # pool.map(self.write_root_ntuple, results_ordered)
+            r = list(tqdm.tqdm(pool.imap(self.write_root_ntuple, results_ordered), desc='Delivered Samples', total=len(samples), unit='sample'))
 
         return self._trex_config.get_job_block('NtuplePath')
