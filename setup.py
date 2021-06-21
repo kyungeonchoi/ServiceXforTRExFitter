@@ -33,9 +33,9 @@ setuptools.setup(name="servicex_for_trexfitter",
                  python_requires='>=3.6',
                  install_requires=[
                     "servicex>=2.2b5",
-                    "tcut-to-qastle>=0.5",
+                    "tcut-to-qastle>=0.6",
                     "parquet-to-root>=0.3.0",
-                    "nest-asyncio>=1.3.3",
+                    "nest-asyncio>=1.5.1",
                     "numpy>=1.15.4",
                     "pyarrow<3.0,>=2.0.0",
                     "tqdm>=4.60.0"

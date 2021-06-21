@@ -2,7 +2,7 @@ import asyncio
 import tcut_to_qastle as tq
 from servicex import ServiceXDataset
 from aiohttp import ClientSession
-
+import nest_asyncio
 
 class ServiceXFrontend:
 
@@ -17,6 +17,8 @@ class ServiceXFrontend:
         Get data from ServiceX
         """
         print("Retrieving data from ServiceX Uproot backend..")
+
+        nest_asyncio.apply()
 
         async def bound_get_data(sem, sx_ds, query):
             async with sem:
@@ -42,5 +44,5 @@ class ServiceXFrontend:
                 return await asyncio.gather(*tasks)
 
         newloop = asyncio.get_event_loop()
-        data = newloop.run_until_complete(_get_my_data())
+        data = newloop.run_until_complete(_get_my_data())        
         return data

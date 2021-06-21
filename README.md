@@ -48,9 +48,9 @@ The following items of TRExFitter configuration need to be modified to be compat
 - In `Sample` block: specify NEW option `GridDID` for each `Sample`, where `GridDID` is a Rucio data indentifier which includes scope and name. 
 - In `Sample` block: `NtupleFile` has to be the same as `Sample` name
 
-An example TRExFitter configuration can be found [here](https://github.com/kyungeonchoi/ServiceXforTRExFitter/blob/development/config/v9fit_simple.config).
+An example TRExFitter configuration can be found [here](https://github.com/kyungeonchoi/ServiceXforTRExFitter/blob/development/config/example.config).
 
-N.B. Tenary operation is not supported yet
+Most of standard TCut expressions for `Selection` are supported, but special functions like `Sum$(formula)` are not supported. Please find more about the supported TCut expression [here](https://github.com/ssl-hep/TCutToQastleWrapper).
 
 ### Delivery of slimmed/skimmed ROOT ntuples
 <!-- ```
