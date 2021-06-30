@@ -16,12 +16,15 @@ class LoadServiceXRequests():
         request_list = []
 
         for sample in self._trex_config.get_sample_list():
-            # Request for nominal and systematic only requires additional branches
-            request_list.append(self.request_for_nominal(sample))
+            # ServiceX request only for the samples with field GridDID
+            if 'GridDID' in sample.keys():
 
-            # Request for systematics
-            if sample != 'Data':
-                request_list += self.request_for_systematic(sample)
+                # Request for nominal and systematic only requires additional branches
+                request_list.append(self.request_for_nominal(sample))
+
+                # Request for systematics
+                if sample != 'Data':
+                    request_list += self.request_for_systematic(sample)
 
         return request_list
 
@@ -128,7 +131,7 @@ class LoadServiceXRequests():
         for region in self._trex_config.get_region_list():  # Region
             if 'Variable' in region:
                 if not region['Variable'].split(",")[0][0].isdigit():
-                    columns.append(region['Variable'].split(",")[0])
+                    columns.append(region['Variable'].split(",")[0].split("/")[0].strip("\""))
             if 'Selection' in region:
                 columns = columns + self.get_list_of_columns_in_string(self.replace_XXX(region['Selection']))
             if 'MCweight' in region:
