@@ -14,7 +14,7 @@ class MakeNtuples:
         sam = results[0][0]['Sample']
         # print(f"Writing Sample - {sam}")
 
-        output_file_name = f"{self._trex_config.get_job_block('NtuplePath')}/{sam}.root"
+        output_file_name = f"{self._trex_config.get_job_block('NtuplePath')}/servicex_{sam}.root"
         
         for tree in results: # loop over requests (different TTree)
             tree_name = tree[0]['ntupleName']
