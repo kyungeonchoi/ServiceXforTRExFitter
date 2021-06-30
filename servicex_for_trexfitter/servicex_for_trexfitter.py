@@ -35,6 +35,9 @@ class ServiceXTRExFitter:
         # Load ServiceX requests
         requests = self._servicex_requests.__dict__['_servicex_requests']
 
+        # Exit if no GridDID for all Sample
+        if len(requests) == 0: return print("No ServiceX request made - no Sample with GridDID")
+
         # Configure ServiceX Frontend to connect ServiceX backend
         sx = ServiceXFrontend(requests)
 
