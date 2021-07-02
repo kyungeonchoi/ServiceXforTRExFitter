@@ -38,7 +38,7 @@ class MakeNtuples:
         print('\nConverting ServiceX delivered parquet to ROOT Ntuple..')
 
         # Create output directory
-        Path(self._trex_config.get_job_block('NtuplePaths')).mkdir(parents=True, exist_ok=True)
+        Path(f"{self._trex_config.get_job_block('NtuplePaths')}/servicex").mkdir(parents=True, exist_ok=True)
         
         # List of Samples
         samples = list(dict.fromkeys([request['Sample'] for request in sx_requests]))
