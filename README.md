@@ -82,7 +82,7 @@ sx_trex.get_ntuples()
 
 Once you load the package, you can define an instance with an argument of `TRExFitter` configuration file.
 You can then ask for delivery of `ROOT` ntuples.
-It will initiate `ServiceX` transformation(s) based on your `TRExFitter` configuration, and deliver `ROOT` ntuples to the path you specified at `Job/NtuplePath`.
+It will initiate `ServiceX` transformation(s) based on your `TRExFitter` configuration, and deliver `ROOT` ntuples to the path you specified at `NtuplePaths/servicex`.
 
 ### Local data cache
 
