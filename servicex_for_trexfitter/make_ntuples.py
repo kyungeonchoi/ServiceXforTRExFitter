@@ -14,7 +14,7 @@ class MakeNtuples:
         sam = results[0][0]['Sample']
         # print(f"Writing Sample - {sam}")
 
-        output_file_name = f"{self._trex_config.get_job_block('NtuplePath')}/{sam}.root"
+        output_file_name = f"{self._trex_config.get_job_block('NtuplePaths')}/servicex/{sam}.root"
         
         for tree in results: # loop over requests (different TTree)
             tree_name = tree[0]['ntupleName']
@@ -38,7 +38,7 @@ class MakeNtuples:
         print('\nConverting ServiceX delivered parquet to ROOT Ntuple..')
 
         # Create output directory
-        Path(self._trex_config.get_job_block('NtuplePath')).mkdir(parents=True, exist_ok=True)
+        Path(f"{self._trex_config.get_job_block('NtuplePaths')}/servicex").mkdir(parents=True, exist_ok=True)
         
         # List of Samples
         samples = list(dict.fromkeys([request['Sample'] for request in sx_requests]))
@@ -62,4 +62,4 @@ class MakeNtuples:
             # pool.map(self.write_root_ntuple, results_ordered)
             r = list(tqdm.tqdm(pool.imap(self.write_root_ntuple, results_ordered), desc='Delivered Samples', total=len(samples), unit='sample'))
 
-        return self._trex_config.get_job_block('NtuplePath')
+        return self._trex_config.get_job_block('NtuplePaths')
