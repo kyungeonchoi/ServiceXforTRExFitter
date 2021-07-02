@@ -1,28 +1,34 @@
 # ServiceX for TRExFitter
 
+For GitHub and PyPI release v0.10.0
+
 ## Overview
 
 [`ServiceX`](https://github.com/ssl-hep/ServiceX), a component of the IRIS-HEP DOMA group's iDDS, is an experiment-agnostic service to enable on-demand data delivery from data lakes in different data formats, including Apache Arrow and ROOT ntuple. 
 
 [`TRExFitter`](https://gitlab.cern.ch/TRExStats/TRExFitter) is a popular framework to perform profile likelihood fits in ATLAS experiment. It takes ROOT histograms or ntuples as input. Long turnaround time of ntuple reading for large and/or remote data would slow down the whole analysis.
 
-`servicex-for-trexfitter` is a python library to interface ServiceX into TRExFitter framework. It provides an alternative method to produce histograms out of ROOT ntuples. 
+<!-- `servicex-for-trexfitter` is a python library to interface ServiceX into TRExFitter framework. It provides an alternative method to produce histograms out of ROOT ntuples.  -->
+
+[`servicex-for-trexfitter`](https://github.com/kyungeonchoi/ServiceXforTRExFitter) is a Python package to integrate `ServiceX` into the `TRExFitter` framework.
+It provides an alternative workflow if you use `ROOT` ntuples as inputs.
+The package analyzes your `TRExFitter` configuration file, and delivers only necessary branches and entries to produce all histograms defined in your `TRExFitter` configuration file.
+
+The default workflow requires to download all `ROOT` ntuples to your local machine or CERN EOS area from the grid.
+The workflow using `servicex-for-trexfitter`, on the the other hand, delivers only a subset of `ROOT` ntuples.
+It practically replaces the step to download `ROOT` ntuples from the grid using `Rucio`.
 
 <!-- Primary goal is the fast delivery of histograms from ROOT ntuples, which replaces TRExFitter option `n`.  -->
 
-Expected improvements:
-<!-- - Faster turnaround: this library analyzes your TRExFitter configuration to apply preselection (or filtering) on the ntuples and deliver only necessary branches. -->
-- Faster turnaround: this library analyzes your TRExFitter configuration and performs on-the-fly transformation to apply preselection (or filtering) on the ntuples and delivers only necessary branches.
-- Disk space: ServiceX reads files on grid, thus no need to have a direct access to ROOT ntuples.
-- Scalability: ServiceX is running on a K8s cluster which can easily scale the job.
+![Workflow comparison](img/current_vs_serviceX_workflow.png)
 
-Possible bottlenecks:
-- Bad network speed between the grid site and the K8s cluster where ServiceX deployed.
-- Parquet to ROOT ntuple conversion is currently being done on your PC or laptop.
+The main advantages are:
 
-<!-- ServiceX for TRExFitter is a python library 
-which delivers only needed data based on the TRExFitter configuration file
-to deliver only data used by TRExFitter interactively. -->
+- Disk space: No need to store all `ROOT` ntuples locally.
+A reduction on the delivered `ROOT` ntuples by `servicex-for-trexfitter` varies accoring to the setting in your `TRExFitter` configuration file.
+- Faster turnaround: Download of `ROOT` ntuples can be faster for `servicex-for-trexfitter` as it parallelizes your job up to each `TTree` of each file and delivers smaller `ROOT` ntuples over WAN.
+Processing time of `TRExFitter` option `n` is naturally faster for the workflow using `servicex-for-trexfitter` as it runs over smaller `ROOT` ntuples.
+- Simplicity: A single `TRExFitter` configuration file to get `ROOT` ntuples from the grid using `servicex-for-trexfitter` and all other `TRExFitter` steps. No separate script needed to download all `ROOT` ntuples from the grid.
 
 
 ## Prerequisites
@@ -40,45 +46,54 @@ The library is published at PyPI: [servicex-for-trexfitter](https://pypi.org/pro
 
 ### Prepare TRExFitter configuration
 
-The following items of TRExFitter configuration need to be modified to be compatible with the library:
+The followings are the settings needed for the workflow using `servicex-for-trexfitter`:
 
-- In `Job` block
-    - `NtuplePath` as `<Output Path>/Data`
-    - Set `UseServiceX` as `TRUE`
-- In `Sample` block: specify NEW option `GridDID` for each `Sample`, where `GridDID` is a Rucio data indentifier which includes scope and name. 
-- In `Sample` block: `NtupleFile` has to be the same as `Sample` name
+#### `Job` block settings
 
-An example TRExFitter configuration can be found [here](https://github.com/kyungeonchoi/ServiceXforTRExFitter/blob/development/config/example.config).
+- `NtuplePaths: <PATH>` 
+    - The path where input root files are stored. 
+    - Write permission is required as ServiceX delivers root ntuples to the subdirectory `servicex` of this path.
 
-Most of standard TCut expressions for `Selection` are supported, but special functions like `Sum$(formula)` are not supported. Please find more about the supported TCut expression [here](https://github.com/ssl-hep/TCutToQastleWrapper).
+#### `Sample` block settings
 
-### Delivery of slimmed/skimmed ROOT ntuples
-<!-- ```
+- `GridDID: <Rucio DID>`
+    - Add option `GridDID` for the `Sample` using ServiceX for delivery.     
+    - Both scope and name for `GridDID`, e.g., `user.kchoi:user.kchoi.WZana_WZ`.
+    - `Sample` without an option `GridDID` is treated as a typical Sample, which reads ntuple files from local path.
+- `NtupleFile: servicex/<SAMPLE NAME>`
+    - `servicex-for-trexfitter` delivers one `ROOT` file per `Sample` with the same name as the `Sample` name.
+    - This option is required only for the Samples with option `GridDID`. Other Samples can use any option valid for option NTUP.
+
+Here is a side-by-side comparsion of example configuration files:
+
+`servicex-for-trexfitter` | Default
+:--------:|:------:
+![](img/config_servicex_2.png) | ![](img/config_trexfitter_2.png)
+
+Most of standard TCut expressions for `Selection` are supported, but special functions like `Sum$(formula)` are not supported yet. Please find more about the supported TCut expression [here](https://github.com/ssl-hep/TCutToQastleWrapper).
+
+### Deliver `ROOT` ntuples using `servicex-for-trexfitter`
+
+```python
 from servicex_for_trexfitter import ServiceXTRExFitter
-sx_trex = ServiceXTRExFitter('<TRExFitter configuration file>')
-sx_trex.get_ntuples()
-``` -->
-The library can be loaded by the following command
-```
-from servicex_for_trexfitter import ServiceXTRExFitter
-```
-
-and then an instance can be created with an argument of TRExFitter configuration file.
-```
-sx_trex = ServiceXTRExFitter('<TRExFitter configuration file>')
-```
-
-Now you are ready to make a delivery request. 
-```
+sx_trex = ServiceXTRExFitter("<TRExFitter configuration file>")
 sx_trex.get_ntuples()
 ```
-It will initiate ServiceX transformation(s) based on your TRExFitter configuration, and deliver ROOT ntuples that are effectively slimmed and skimmed.
 
-### Prepare histograms from delivered ROOT ntuples
+Once you load the package, you can define an instance with an argument of `TRExFitter` configuration file.
+You can then ask for delivery of `ROOT` ntuples.
+It will initiate `ServiceX` transformation(s) based on your `TRExFitter` configuration, and deliver `ROOT` ntuples to the path you specified at `Job/NtuplePath`.
 
-- You need to checkout the branch `feat/servicex-integration` of TRExFitter framework to be compatible with the `servicex-for-trexfitter`.
-- Now you can run TRExFitter action `n` to generate histograms from the ServiceX delivered ROOT ntuples. 
-<!-- Given that the current TRExFitter framework doesn't support `ServiceXforTRExFitter` yet, the option `GridDID` in `Sample` block has to be deleted before you run TRExFitter. -->
+### Local data cache
+
+`ServiceX` provides the feature that caches your queries and data into a local temporary directory.
+Therefore, whenever you make further changes to the `TRExFitter` configuration file, `servicex-for-trexfitter` creates data delivery requests only for the updated parts.
+
+### Compatible TRExFitter framework
+
+To run the subsequent steps of `TRExFitter` with the `ROOT` ntuples that `servicex-for-trexfitter` delivered, you need to checkout the branch `feat/servicex-integration` of `TRExFitter` framework.
+Otherwise, `TRExFitter` will complain about the unknown options.
+The feature branch will be merged into master in the near future.
 
 ## Acknowledgements
 Support for this work was provided by the the U.S. Department of Energy, Office of High Energy Physics under Grant No. DE-SC0007890
