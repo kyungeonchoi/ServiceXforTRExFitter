@@ -8,9 +8,17 @@ class LoadServiceXRequests():
     """
     def __init__(self, trex_config):
         self._trex_config = trex_config
-
+        self.validate_config()
         print('Prepare ServiceX requests..')
         self._servicex_requests = self.prepare_requests()
+
+
+    def validate_config(self):
+        # Check ReadFrom is NTUP
+        if self._trex_config.get_job_block('ReadFrom') != 'NTUP':
+            raise ValueError(f'Only ReadFrom: NTUP is supported.')
+
+
 
     def prepare_requests(self):
         request_list = []
