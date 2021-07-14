@@ -6,32 +6,37 @@ class LoadServiceXRequests():
     """
     Prepare ServiceXDataset and query pairs from input TRExFitter config
     """
-    def __init__(self, trex_config):
+    def __init__(self, trex_config, verbose):
         self._trex_config = trex_config
-        self.validate_config()
+        self.validate_config(verbose)
         print('Prepare ServiceX requests..')
         self._servicex_requests = self.prepare_requests()
 
 
-    def validate_config(self):
+    def validate_config(self, verbose):
         # Check ReadFrom is NTUP
         if self._trex_config.get_job_block('ReadFrom') != 'NTUP':
             raise ValueError(f'Only ReadFrom: NTUP is supported.')
-
+        if verbose:
+            print('--- List of Options that servicex-for-trexfitter reads ---')
+            print('  Job block: ReadFrom, ReplacementFile, MCweight, Selection, NtuplePaths')
+            print('  Region block: Variable, Selection, MCweight')
+            print('  Sample block: NtupleName, NtuplePaths, MCweight, Selection, IgnoreSelection')
+            print('  *None for Fit, Limit, Significance, Options blocks')
 
 
     def prepare_requests(self):
         request_list = []
 
         for sample in self._trex_config.get_sample_list():
-            # ServiceX request only for the samples with field GridDID
+            # ServiceX request only for the samples with Option GridDID
             if 'GridDID' in sample.keys():
 
                 # Request for nominal and systematic only requires additional branches
                 request_list.append(self.request_for_nominal(sample))
 
                 # Request for systematics
-                if sample != 'Data':
+                if sample['Sample'].lower() != 'data':
                     request_list += self.request_for_systematic(sample)
 
         return request_list
@@ -41,7 +46,7 @@ class LoadServiceXRequests():
         req['Sample'] = sample['Sample']
         req['gridDID'] = sample['GridDID']
         req['ntupleName'] = self._trex_config.get_ntuple_name()
-        if sample['Sample'] == 'Data':
+        if sample['Sample'].lower() == 'data':
             req['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                            self.get_columns_in_job() +
                                                            self.get_columns_in_sample(sample)))))
@@ -50,8 +55,10 @@ class LoadServiceXRequests():
                                                            self.get_columns_in_job() +
                                                            self.get_columns_in_sample(sample) +
                                                            self.get_columns_in_systematic(sample['Sample'])))))
-
-        req['selection'] = self.get_selection(sample)
+        if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true': 
+            req['selection'] = "1"
+        else:
+            req['selection'] = self.get_selection(sample)
         return req
 
     def request_for_systematic(self, sample):
@@ -75,8 +82,10 @@ class LoadServiceXRequests():
                     req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                                        self.get_columns_in_job() +
                                                                        self.get_columns_in_sample(sample)))))
-                    # req_sys['selection'] = self.replace_XXX(sample['Selection'])
-                    req_sys['selection'] = self.get_selection(sample)
+                    if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true': 
+                        req_sys['selection'] = "1"
+                    else:
+                        req_sys['selection'] = self.get_selection(sample)
                     request_sys_list.append(req_sys)
                 if 'NtupleNameDown' in systematic:
                     req_sys = {}
@@ -86,8 +95,10 @@ class LoadServiceXRequests():
                     req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                                        self.get_columns_in_job() +
                                                                        self.get_columns_in_sample(sample)))))
-                    # req_sys['selection'] = self.replace_XXX(sample['Selection'])
-                    req_sys['selection'] = self.get_selection(sample)
+                    if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true': 
+                        req_sys['selection'] = "1"
+                    else:
+                        req_sys['selection'] = self.get_selection(sample)
                     request_sys_list.append(req_sys)
         return request_sys_list
 
