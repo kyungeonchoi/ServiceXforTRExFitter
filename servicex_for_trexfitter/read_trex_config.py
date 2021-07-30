@@ -12,20 +12,23 @@ def read_configuration(confFile: str, block_name: str):
         num = 0
         for mark, line in enumerate(configFile.readlines()):
             if re.search(r'\b{}\b'.format(block_name), line):
+                # Read block names such as Sample: ttH
                 block[block_name+str(num)] = {}
                 block[block_name+str(num)][line.split()[0].strip(':')] \
                     = line.split(":")[1].strip("\n").strip().strip('\"')
                 inlines = mark + 2
+
+                # Read Options in each block
                 while inlines:
                     inline = linecache.getline(confFile, inlines)
                     if len(re.findall("^ *", inline)[0]) == 2 or len(re.findall("^ *", inline)[0]) == 1:
                         if inline.strip():  # Check empty line
-                            if len(inline.split(":")) == 3:  # For GridDID
-                                block[block_name+str(num)][inline.split(":")[0].strip()] = \
-                                    ':'.join(inline.split(":")[1:]).strip("\n").strip().strip('\"')
-                            else:
+                            if len(inline.split(":")) == 2: # normal options
                                 block[block_name+str(num)][inline.split(":")[0].strip()] = \
                                     inline.split(":")[1].strip("\n").strip().strip('\"')
+                            else: # options with more than 2 colons
+                                block[block_name+str(num)][inline.split(":")[0].strip()] = \
+                                    ':'.join(inline.split(":")[1:]).strip("\n").strip().strip('\"')
                     else:
                         num += 1
                         break

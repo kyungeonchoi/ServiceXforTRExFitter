@@ -9,22 +9,58 @@ class MakeNtuples:
     def __init__(self, trex_config):
         self._trex_config = trex_config
 
+    def merge_same_ttree(self, results):
+        
+        list_trees = []
+        for tree in results: # extract same ntuple names 
+            list_trees.append(tree[0]['ntupleName'])
+        list_trees = list(dict.fromkeys(list_trees))
+
+        same_tree_dict = {}
+        for tree in list_trees:
+            same_tree_dict[tree] = []
+
+        for tree in list_trees:
+            for loc, outputs in enumerate(results):
+                if outputs[0]['ntupleName'] == tree:
+                    same_tree_dict[tree].append(loc)
+
+        merged_results = []
+        for tree in same_tree_dict:
+            parquet_list = []
+            tree_info = None
+            for output in same_tree_dict[tree]:
+                parquet_list.append(results[output][1])
+                tree_info = results[output][0]
+            parquet_list = [item for sublist in parquet_list for item in sublist] # flatten
+            merged_results.append((tree_info, parquet_list))
+
+        return merged_results
+
+
     def write_root_ntuple(self, results):
 
-        sam = results[0][0]['Sample']
-        # print(f"Writing Sample - {sam}")
+        results = self.merge_same_ttree(results)
 
+        sam = results[0][0]['Sample']
         output_file_name = f"{self._trex_config.get_job_block('NtuplePaths')}/servicex/{sam}.root"
         
+        # Delete existing one
+        file_path = Path(output_file_name)
+        if file_path.exists():
+            file_path.unlink()
+        
+        # Write new ROOT file
         for tree in results: # loop over requests (different TTree)
             tree_name = tree[0]['ntupleName']
             out_parquet_list = tree[1]
-            if tree_name != 'nominal':
+            if file_path.exists():
                 output_file = TFile.Open(output_file_name, 'UPDATE')
                 parquet_to_root(out_parquet_list, output_file, tree_name, verbose=False)
                 output_file.Close()
             else:
                 parquet_to_root(out_parquet_list, output_file_name, tree_name, verbose=False)
+
 
     def make_ntuples(self, sx_requests, output_parquet_list):
 
@@ -59,7 +95,6 @@ class MakeNtuples:
 
         nproc = min(len(samples), int(cpu_count()/2))
         with Pool(processes=nproc) as pool:
-            # pool.map(self.write_root_ntuple, results_ordered)
             r = list(tqdm.tqdm(pool.imap(self.write_root_ntuple, results_ordered), desc='Delivered Samples', total=len(samples), unit='sample'))
 
         return self._trex_config.get_job_block('NtuplePaths')

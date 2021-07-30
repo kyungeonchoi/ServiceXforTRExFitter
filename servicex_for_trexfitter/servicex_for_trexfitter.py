@@ -7,12 +7,13 @@ from .make_ntuples import MakeNtuples
 
 class ServiceXTRExFitter:
 
-    def __init__(self, trex_config):
+    def __init__(self, trex_config:str, verbose:bool=False):
         """
-        self._trex_config    Python Dict format of input TRExFitter configuration file
+        self._trex_config       Python Dict format of input TRExFitter configuration file
+        self._servicex_requests Python Dict format of prepared ServiceX requests
         """
         self._trex_config = LoadTRExConfig(trex_config)
-        self._servicex_requests = LoadServiceXRequests(self._trex_config)
+        self._servicex_requests = LoadServiceXRequests(self._trex_config, verbose)
 
     def get_trex_configuration(self):
         """
