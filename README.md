@@ -59,6 +59,7 @@ The followings are the settings needed for the workflow using `servicex-for-trex
 - `GridDID: <Rucio DID>`
     - Add option `GridDID` for the `Sample` using ServiceX for delivery.     
     - Both scope and name for `GridDID`, e.g., `user.kchoi:user.kchoi.WZana_WZ`.
+    - Sample can have multiple DIDs: e.g., `user.kchoi:user.kchoi.WZana_WZ_mc16a, user.kchoi:user.kchoi.WZana_WZ_mc16d, user.kchoi:user.kchoi.WZana_WZ_mc16e`
     - `Sample` without an option `GridDID` is treated as a typical Sample, which reads ntuple files from local path.
 - `NtupleFile: servicex/<SAMPLE NAME>`
     - `servicex-for-trexfitter` delivers one `ROOT` file per `Sample` with the same name as the `Sample` name.
