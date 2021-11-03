@@ -32,10 +32,10 @@ class ServiceXFrontend:
             async with ClientSession() as session:
                 for request in self._servicex_requests:
                     sx_ds = ServiceXDataset(dataset=request['gridDID'], \
-                        backend_type='uproot', \
-                        image=uproot_transformer_image, \
-                        session_generator=session, \
-                        ignore_cache=ignore_cache)
+                                            image=uproot_transformer_image, \
+                                            session_generator=session, \
+                                            backend_name='uproot', \
+                                            ignore_cache=ignore_cache)
                     query = tq.translate(request['ntupleName'], \
                         request['columns'], \
                         request['selection'])
