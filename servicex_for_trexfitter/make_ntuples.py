@@ -3,6 +3,7 @@ from parquet_to_root import parquet_to_root
 from ROOT import TFile
 from multiprocessing import Pool, cpu_count
 import tqdm
+# import uproot
 
 class MakeNtuples:
 
@@ -40,7 +41,11 @@ class MakeNtuples:
 
     def write_root_ntuple(self, results):
 
+        # print(f"results before merge: {results}")
+
         results = self.merge_same_ttree(results)
+
+        # print(f"results after merge: {results}")
 
         sam = results[0][0]['Sample']
         output_file_name = f"{self._trex_config.get_job_block('NtuplePaths')}/servicex/{sam}.root"
@@ -50,6 +55,17 @@ class MakeNtuples:
         if file_path.exists():
             file_path.unlink()
         
+        # # Write new ROOT file
+        # outfile = uproot.recreate(output_file_name)
+        # for dataset in results:
+        #     tree_dict = {}
+        #     infiles = dataset[1]
+        #     # ak_arr = ak.from_parquet(infile)/
+        #     # for field in ak_arr.fields:
+        #     #     tree_dict[field] = ak_arr[field]
+        #     outfile[dataset[0]['ntupleName']] = tree_dict
+        # outfile.close()
+
         # Write new ROOT file
         for tree in results: # loop over requests (different TTree)
             tree_name = tree[0]['ntupleName']
@@ -92,7 +108,7 @@ class MakeNtuples:
                     else:
                         results[sample] = [pair]
         results_ordered = list(results.values())
-
+        # print(results_ordered)
         nproc = min(len(samples), int(cpu_count()/2))
         with Pool(processes=nproc) as pool:
             r = list(tqdm.tqdm(pool.imap(self.write_root_ntuple, results_ordered), desc='Delivered Samples', total=len(samples), unit='sample'))
