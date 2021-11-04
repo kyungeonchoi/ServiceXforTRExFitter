@@ -1,6 +1,6 @@
 # ServiceX for TRExFitter
 
-For GitHub and PyPI release v1.0.1
+For GitHub and PyPI release v1.0.2
 
 ## Overview
 
