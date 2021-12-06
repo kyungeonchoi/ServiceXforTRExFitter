@@ -1,9 +1,9 @@
 from pathlib import Path
-from parquet_to_root import parquet_to_root
-from ROOT import TFile
 from multiprocessing import Pool, cpu_count
+import pyarrow.parquet as pq
+import pyarrow as pa
 import tqdm
-# import uproot
+import uproot
 
 class MakeNtuples:
 
@@ -41,11 +41,7 @@ class MakeNtuples:
 
     def write_root_ntuple(self, results):
 
-        # print(f"results before merge: {results}")
-
         results = self.merge_same_ttree(results)
-
-        # print(f"results after merge: {results}")
 
         sam = results[0][0]['Sample']
         output_file_name = f"{self._trex_config.get_job_block('NtuplePaths')}/servicex/{sam}.root"
@@ -55,27 +51,13 @@ class MakeNtuples:
         if file_path.exists():
             file_path.unlink()
         
-        # # Write new ROOT file
-        # outfile = uproot.recreate(output_file_name)
-        # for dataset in results:
-        #     tree_dict = {}
-        #     infiles = dataset[1]
-        #     # ak_arr = ak.from_parquet(infile)/
-        #     # for field in ak_arr.fields:
-        #     #     tree_dict[field] = ak_arr[field]
-        #     outfile[dataset[0]['ntupleName']] = tree_dict
-        # outfile.close()
-
         # Write new ROOT file
-        for tree in results: # loop over requests (different TTree)
-            tree_name = tree[0]['ntupleName']
-            out_parquet_list = tree[1]
-            if file_path.exists():
-                output_file = TFile.Open(output_file_name, 'UPDATE')
-                parquet_to_root(out_parquet_list, output_file, tree_name, verbose=False)
-                output_file.Close()
-            else:
-                parquet_to_root(out_parquet_list, output_file_name, tree_name, verbose=False)
+        outfile = uproot.recreate(output_file_name)
+        for dataset in results:
+            pq_list = [pq.read_table(file) for file in dataset[1]]
+            pqtable = pa.concat_tables(pq_list)
+            outfile[dataset[0]['ntupleName']] = pqtable.to_pandas()        
+        outfile.close()
 
 
     def make_ntuples(self, sx_requests, output_parquet_list):
