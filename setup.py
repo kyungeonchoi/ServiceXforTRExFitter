@@ -36,7 +36,6 @@ setuptools.setup(name="servicex_for_trexfitter",
                  license="BSD 3-clause",
                  python_requires='>=3.6',
                  install_requires=[
-                    "Cython",
                     "tcut-to-qastle>=0.6",
                     "servicex>=2.4,<2.5",
                     "nest-asyncio>=1.5.1",
