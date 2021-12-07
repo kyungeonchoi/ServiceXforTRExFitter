@@ -42,7 +42,7 @@ setuptools.setup(name="servicex_for_trexfitter",
                     "numpy>=1.15.4",
                     "uproot>=4.1.5",
                     "tqdm>=4.60.0",
-                    "pyarrow>=5.0.0"
+                    "pyarrow>=5.0.0, <6.0.0"
                     ],
                  classifiers=[
                     "Development Status :: 3 - Alpha",
