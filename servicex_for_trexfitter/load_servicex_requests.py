@@ -21,7 +21,8 @@ class LoadServiceXRequests():
             print('  Job block:        ReadFrom, ReplacementFile, MCweight, Selection, NtuplePaths')
             print('  Region block:     Variable, Selection, MCweight')
             print('  Sample block:     NtupleName, NtuplePaths, MCweight, Selection, IgnoreSelection')
-            print('  Systematic block: Samples, Exclude, NtupleNameUp, NtupleNameDown, WeightUp, WeightDown, WeightSufUp, WeightSufDown')
+            print('  Systematic block: Samples, Exclude, NtupleNameUp, NtupleNameDown, WeightUp, \
+                     WeightDown, WeightSufUp, WeightSufDown')
 
     def prepare_requests(self):
         request_list = []
@@ -61,7 +62,7 @@ class LoadServiceXRequests():
                                                            self.get_columns_in_job() +
                                                            self.get_columns_in_sample(sample) +
                                                            self.get_columns_in_systematic(sample['Sample'])))))
-        if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true': 
+        if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true':
             req['selection'] = "1"
         else:
             req['selection'] = self.get_selection(sample)
@@ -89,7 +90,7 @@ class LoadServiceXRequests():
                     req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                                        self.get_columns_in_job() +
                                                                        self.get_columns_in_sample(sample)))))
-                    if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true': 
+                    if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true':
                         req_sys['selection'] = "1"
                     else:
                         req_sys['selection'] = self.get_selection(sample)
@@ -103,7 +104,7 @@ class LoadServiceXRequests():
                     req_sys['columns'] = ', '.join(list(dict.fromkeys((self.get_columns_in_all_region() +
                                                                        self.get_columns_in_job() +
                                                                        self.get_columns_in_sample(sample)))))
-                    if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true': 
+                    if 'IgnoreSelection' in sample and sample['IgnoreSelection'].lower() == 'true':
                         req_sys['selection'] = "1"
                     else:
                         req_sys['selection'] = self.get_selection(sample)
@@ -219,7 +220,7 @@ class LoadServiceXRequests():
             selection_job = self.replace_XXX(job['Selection'])
         else:
             selection_job = "1"
-        
+
         # Selection in Sample block
         if 'Selection' in sample:
             selection_sample = self.replace_XXX(sample['Selection'])
@@ -232,7 +233,7 @@ class LoadServiceXRequests():
             if 'Selection' in region:
                 if selection_region == "":
                     selection_region = "(" + self.replace_XXX(region['Selection']) + ")"
-                else:    
+                else:
                     selection_region = selection_region + " || " + "(" + self.replace_XXX(region['Selection']) + ")"
 
         return selection_job + " && " + selection_sample + " && " + "(" + selection_region + ")"
