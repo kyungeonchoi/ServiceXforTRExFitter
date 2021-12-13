@@ -1,6 +1,6 @@
 # ServiceX for TRExFitter
 
-For GitHub and PyPI release v1.0.2
+For GitHub and PyPI release v1.1.0
 
 ## Overview
 
@@ -35,7 +35,6 @@ Processing time of `TRExFitter` option `n` is naturally faster for the workflow 
 
 - Python 3.6, 3.7, or 3.8
 - Access to an *Uproot* ServiceX endpoint. More information about ServiceX can be found at [ServiceX documentation](https://servicex.readthedocs.io/en/latest/)
-- PyROOT
 
 
 ## Usage
@@ -71,9 +70,12 @@ Here is a side-by-side comparsion of example configuration files:
 :--------:|:------:
 ![](img/config_servicex_2.png) | ![](img/config_trexfitter_2.png)
 
-Most of standard TCut expressions for `Selection` are supported, but special functions like `Sum$(formula)` are not supported yet. Please find more about the supported TCut expression [here](https://github.com/ssl-hep/TCutToQastleWrapper).
+#### Caveat
 
-### Deliver `ROOT` ntuples using `servicex-for-trexfitter`
+- Only scalar-type of TBranch is supported. 
+- Most of standard TCut expressions are supported for `Selection`,but special functions like `Sum$(formula)` are not supported yet. Please find more about the supported TCut expression [here](https://github.com/ssl-hep/TCutToQastleWrapper).
+
+### Deliver `ROOT` ntuples
 
 ```python
 from servicex_for_trexfitter import ServiceXTRExFitter
