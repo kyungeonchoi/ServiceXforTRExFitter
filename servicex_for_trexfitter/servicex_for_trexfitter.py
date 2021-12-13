@@ -7,7 +7,7 @@ from .make_ntuples import MakeNtuples
 
 class ServiceXTRExFitter:
 
-    def __init__(self, trex_config:str, verbose:bool=False):
+    def __init__(self, trex_config: str, verbose: bool = False):
         """
         self._trex_config       Python Dict format of input TRExFitter configuration file
         self._servicex_requests Python Dict format of prepared ServiceX requests
@@ -37,7 +37,8 @@ class ServiceXTRExFitter:
         requests = self._servicex_requests.__dict__['_servicex_requests']
 
         # Exit if no GridDID for all Sample
-        if len(requests) == 0: return print("No ServiceX request made - no Sample with GridDID")
+        if len(requests) == 0:
+            return print("No ServiceX request made - no Sample with GridDID")
 
         # Configure ServiceX Frontend to connect ServiceX backend
         sx = ServiceXFrontend(requests)

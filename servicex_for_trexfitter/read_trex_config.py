@@ -23,10 +23,10 @@ def read_configuration(confFile: str, block_name: str):
                     inline = linecache.getline(confFile, inlines)
                     if len(re.findall("^ *", inline)[0]) == 2 or len(re.findall("^ *", inline)[0]) == 1:
                         if inline.strip():  # Check empty line
-                            if len(inline.split(":")) == 2: # normal options
+                            if len(inline.split(":")) == 2:  # normal options
                                 block[block_name+str(num)][inline.split(":")[0].strip()] = \
                                     inline.split(":")[1].strip("\n").strip().strip('\"')
-                            else: # options with more than 2 colons
+                            else:  # options with more than 2 colons
                                 block[block_name+str(num)][inline.split(":")[0].strip()] = \
                                     ':'.join(inline.split(":")[1:]).strip("\n").strip().strip('\"')
                     else:
@@ -34,6 +34,7 @@ def read_configuration(confFile: str, block_name: str):
                         break
                     inlines += 1
         return block
+
 
 def load_trex_config(confFile: str):
     """
@@ -44,6 +45,7 @@ def load_trex_config(confFile: str):
     samples = read_configuration(confFile, "Sample")
     systematics = read_configuration(confFile, "Systematic")
     return {**job, **regions, **samples, **systematics}
+
 
 class LoadTRExConfig():
     """
